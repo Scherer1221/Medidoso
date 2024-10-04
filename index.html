@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-box">
+                <label for="username">Nome de Usuário *</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-box">
+                <label for="password">Senha *</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="input-box">
+                <input type="submit" value="Entrar">
+            </div>
+        </form>
+        <a href="#">Criar uma nova Conta</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Impede o comportamento padrão de envio do formulário
+            // Simula o redirecionamento para uma página de teste
+            window.location.href = "pagina_teste.html";  // Altere para o caminho correto da sua página de teste
+        });
+    </script>
+
+</body>
+</html>
