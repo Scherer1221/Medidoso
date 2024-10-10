@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Semanal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .menu {
+            width: 200px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu h2 {
+            text-align: center;
+        }
+
+        .menu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .menu li {
+            margin: 10px 0;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .menu a:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .agenda {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .dia {
+            width: 30%;
+            background-color: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .dia h2 {
+            text-align: center;
+        }
+
+        .input-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input {
+            width: 70%;
+            padding: 5px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        .input-extra {
+            width: 25%;
+            padding: 5px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            margin-right: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .remove-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 2px 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Agenda de Remédios</a></li>
+            <li><a href="#">Histórico de Agendas</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1>Agenda de Remédios</h1>
+        <div class="agenda">
+            <div class="dia">
+                <h2>Segunda-feira</h2>
+                <ul id="lista-segunda"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-segunda" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-segunda" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('segunda')">Adicionar</button>
+            </div>
+            <div class="dia">
+                <h2>Terça-feira</h2>
+                <ul id="lista-terca"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-terca" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-terca" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('terca')">Adicionar</button>
+            </div>
+            <div class="dia">
+                <h2>Quarta-feira</h2>
+                <ul id="lista-quarta"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-quarta" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-quarta" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('quarta')">Adicionar</button>
+            </div>
+            <div class="dia">
+                <h2>Quinta-feira</h2>
+                <ul id="lista-quinta"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-quinta" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-quinta" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('quinta')">Adicionar</button>
+            </div>
+            <div class="dia">
+                <h2>Sexta-feira</h2>
+                <ul id="lista-sexta"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-sexta" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-sexta" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('sexta')">Adicionar</button>
+            </div>
+            <div class="dia">
+                <h2>Sábado</h2>
+                <ul id="lista-sabado"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-sabado" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-sabado" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('sabado')">Adicionar</button>
+            </div>
+            <div class="dia">
+                <h2>Domingo</h2>
+                <ul id="lista-domingo"></ul>
+                <div class="input-wrapper">
+                    <input type="text" id="input-domingo" placeholder="Adicionar remédio">
+                    <input type="text" class="input-extra" id="extra-input-domingo" placeholder="Horário">
+                </div>
+                <button onclick="adicionarRemedio('domingo')">Adicionar</button>
+            </div>
+        </div>
+        <button onclick="salvarAgenda()">Salvar Agenda</button>
+    </div>
+
+    <script>
+        // Função para adicionar um remédio ao dia correspondente
+        function adicionarRemedio(dia) {
+            const inputRemedio = document.getElementById(`input-${dia}`);
+            const inputExtra = document.getElementById(`extra-input-${dia}`);
+            const lista = document.getElementById(`lista-${dia}`);
+
+            if (inputRemedio.value.trim() !== "") {
+                const novoRemedio = document.createElement("li");
+
+                if (inputExtra.value.trim() !== "") {
+                    novoRemedio.textContent = `${inputRemedio.value} - ${inputExtra.value}`;
+                } else {
+                    novoRemedio.textContent = inputRemedio.value;
+                }
+
+                // Botão para remover o remédio
+                const botaoRemover = document.createElement("button");
+                botaoRemover.textContent = "Remover";
+                botaoRemover.classList.add("remove-btn");
+                botaoRemover.onclick = function() {
+                    lista.removeChild(novoRemedio);
+                };
+
+                // Adiciona o botão de remover ao remédio
+                novoRemedio.appendChild(botaoRemover);
+
+                // Adiciona o remédio na lista do dia
+                lista.appendChild(novoRemedio);
+                
+                // Limpa os campos de input
+                inputRemedio.value = "";
+                inputExtra.value = "";
+            }
+        }
+
+        // Função para salvar a agenda (sem mensagem de alerta)
+        function salvarAgenda() {
+            const dias = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
+            let agendaTexto = "Agenda:\n";
+
+            dias.forEach(dia => {
+                const listaDia = document.getElementById(`lista-${dia}`);
+                if (listaDia.childNodes.length > 0) {
+                    agendaTexto += `${dia.charAt(0).toUpperCase() + dia.slice(1)}:\n`;
+                    listaDia.childNodes.forEach(remedio => {
+                        agendaTexto += ` - ${remedio.firstChild.textContent}\n`;
+                    });
+                }
+            });
+
+            // Aqui você pode processar a agenda como necessário, sem exibir um alerta
+            console.log(agendaTexto); // Exemplo: salvar no console
+        }
+    </script>
+</body>
+</html>
