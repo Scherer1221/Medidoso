@@ -1,38 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tela de Login</title>
-    <link rel="stylesheet" href="style.css">
+    <title>MEDIDOSO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #00c6ff, #0072ff);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        h2 {
+            text-align: center;
+            color: black;
+            margin-top: 10px;
+        }
+
+        .container {
+            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 15px;
+            max-width: 150px;
+            height: auto;
+        }
+
+        .input-box {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .button:hover {
+            background-color: #4cae4c;
+        }
+
+        .google-button {
+            background-color: #dc3545;
+        }
+
+        .google-button:hover {
+            background-color: #c82333;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            color: #007bff;
+            border: 1px solid #007bff;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #e2e6ea;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: green;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="login-container"> teste
+    <!-- TELA INICIAL -->
+    <div class="container" id="initialContainer">
+        <img src="logo-medidoso.jpeg" alt="Logo Medidoso" class="logo">
+        <h2>MEDIDOSO</h2>
+        <button class="button" id="showLogin">Login</button>
+        <button class="button" id="showCreateAccount">Registrar-se</button>
+        <button class="button google-button" id="googleLogin">Entrar com conta do Google</button>
+    </div>
+
+    <!-- TELA DE LOGIN -->
+    <div class="container" id="loginContainer" style="display:none;">
         <h2>Login</h2>
         <form id="loginForm">
             <div class="input-box">
-                <label for="username">Nome de Usuário *</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">E-mail *</label>
+                <input type="email" id="username" required>
             </div>
             <div class="input-box">
                 <label for="password">Senha *</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" required>
             </div>
             <div class="input-box">
-                <input type="submit" value="Entrar">
+                <input type="submit" value="Entrar" class="button">
             </div>
+            <p>
+                <a href="#" id="backToHomeFromLogin" class="back-button">Voltar à página inicial</a>
+            </p>
         </form>
-        <a href="#">Criar uma nova Conta</a>
     </div>
 
-    <script>
+    <!-- TELA DE CRIAÇÃO DE CONTA -->
+    <div class="container" id="createAccountContainer" style="display:none;">
+        <h2>Registrar-se</h2>
+        <form id="createAccountForm">
+            <div class="input-box">
+                <label for="fullName">Nome Completo *</label>
+                <input type="text" id="fullName" required>
+            </div>
+            <div class="input-box">
+                <label for="usernameRegister">Usuário *</label>
+                <input type="text" id="usernameRegister" required>
+            </div>
+            <div class="input-box">
+                <label for="email">E-mail *</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="input-box">
+                <label for="newPassword">Senha *</label>
+                <input type="password" id="newPassword" required>
+            </div>
+            <div class="input-box">
+                <input type="submit" value="Criar Conta" class="button">
+            </div>
+            <p>
+                <a href="#" id="backToHomeFromCreate" class="back-button">Voltar à página inicial</a>
+            </p>
+        </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMQtt7KP30AcHi72FHtaZtZOXIYL7DVv0",
+            authDomain: "medidoso.firebaseapp.com",
+            databaseURL: "https://medidoso-default-rtdb.firebaseio.com",
+            projectId: "medidoso",
+            storageBucket: "medidoso.appspot.com",
+            messagingSenderId: "1006734497522",
+            appId: "1:1006734497522:web:98f5911a09c35146bb626b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        function showContainer(containerId) {
+            document.getElementById('initialContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('createAccountContainer').style.display = 'none';
+            document.getElementById(containerId).style.display = 'block';
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? 'red' : 'green';
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+
+        document.getElementById('googleLogin').addEventListener('click', function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    showToast("Login realizado com sucesso com o Google!");
+                    showContainer('initialContainer');
+                })
+                .catch((error) => {
+                    showToast("Erro ao fazer login com Google: " + error.message, true);
+                });
+        });
+
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();  // Impede o comportamento padrão de envio do formulário
-            // Simula o redirecionamento para uma página de teste
-            window.location.href = "pagina_teste.html";  // Altere para o caminho correto da sua página de teste
+            event.preventDefault();
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    showToast("Login realizado com sucesso!");
+                    showContainer('initialContainer');
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = "Erro ao fazer login.";
+
+                    if (errorCode === 'auth/user-not-found') {
+                        errorMessage = "Esse usuário não existe";
+                    } else if (errorCode === 'auth/wrong-password') {
+                        errorMessage = "Senha incorreta";
+                    }
+
+                    showToast(errorMessage, true);
+                });
+        });
+
+        document.getElementById('createAccountForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const fullName = document.getElementById('fullName').value;
+            const usernameRegister = document.getElementById('usernameRegister').value;
+            const email = document.getElementById('email').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            createUserWithEmailAndPassword(auth, email, newPassword)
+                .then((userCredential) => {
+                    showToast("Conta criada com sucesso!");
+                    showContainer('initialContainer');
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = "Erro ao criar conta.";
+
+                    if (errorCode === 'auth/email-already-in-use') {
+                        errorMessage = "Esse e-mail já está em uso.";
+                    }
+
+                    showToast(errorMessage, true);
+                });
+        });
+
+        document.getElementById('showLogin').addEventListener('click', function() {
+            showContainer('loginContainer');
+        });
+
+        document.getElementById('showCreateAccount').addEventListener('click', function() {
+            showContainer('createAccountContainer');
+        });
+
+        document.getElementById('backToHomeFromLogin').addEventListener('click', function() {
+            showContainer('initialContainer');
+        });
+
+        document.getElementById('backToHomeFromCreate').addEventListener('click', function() {
+            showContainer('initialContainer');
         });
     </script>
-
 </body>
 </html>
