@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Agendas</title>
+
+    <!-- Importação da fonte Poppins do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilo geral */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: linear-gradient(180deg, #00bfff 0%, #0072ff 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Título da página com fundo diferente e sombra */
+        .titulo {
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            font-size: 36px;
+            font-weight: 600;
+            margin-top: 0;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            background: #00a4e4; /* Tom mais escuro para o cabeçalho */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra leve para criar a divisão */
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Card de cada agenda */
+        .agenda-card {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Efeito de hover nos cards */
+        .agenda-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Título do remédio */
+        .agenda-card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #264653;
+        }
+
+        /* Informações do remédio */
+        .agenda-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .agenda-info p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .agenda-info .horarios {
+            background-color: #e9f5f3;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            color: #00bfff; /* Azul claro */
+        }
+
+        /* Botão de download */
+        .btn-download {
+            background-color: #00bfff; /* Azul claro */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background-color: #0072ff; /* Tom mais escuro do azul claro */
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .agenda-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-download {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Título centralizado com fundo diferente e sombra -->
+    <div class="titulo">Histórico de Agendas</div>
+
+    <!-- Container principal -->
+    <div class="container">
+
+        <!-- Exemplo de card de uma agenda -->
+        <div class="agenda-card">
+            <h2>Remédio: Paracetamol 500mg</h2>
+            <div class="agenda-info">
+                <div>
+                    <p><strong>Horário:</strong> 8:00 AM, 12:00 PM, 6:00 PM</p>
+                    <p><strong>Duração:</strong> 10 dias</p>
+                </div>
+                <div class="horarios">
+                    <p>Próximo horário: 12:00 PM</p>
+                </div>
+            </div>
+            <button class="btn-download">Baixar Agenda</button>
+        </div>
+
+        <!-- Outro card de agenda -->
+        <div class="agenda-card">
+            <h2>Remédio: Ibuprofeno 200mg</h2>
+            <div class="agenda-info">
+                <div>
+                    <p><strong>Horário:</strong> 7:00 AM, 1:00 PM, 7:00 PM</p>
+                    <p><strong>Duração:</strong> 5 dias</p>
+                </div>
+                <div class="horarios">
+                    <p>Próximo horário: 1:00 PM</p>
+                </div>
+            </div>
+            <button class="btn-download">Baixar Agenda</button>
+        </div>
+
+        <!-- Mais agendas podem ser adicionadas abaixo -->
+
+    </div>
+
+</body>
+</html>
