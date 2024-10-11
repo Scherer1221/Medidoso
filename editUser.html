@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Dados do Usuário</title>
+
+    <!-- Importação da fonte Poppins do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilo geral */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: linear-gradient(180deg, #00bfff 0%, #0072ff 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Título da página */
+        .titulo {
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            font-size: 36px;
+            font-weight: 600;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            background: #00a4e4; /* Tom mais escuro para o cabeçalho */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0; /* Posiciona o título no topo da página */
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin-top: 100px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        /* Efeito de hover no formulário */
+        .container:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilo dos campos do formulário */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #264653;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 40px; /* Espaço extra para o ícone */
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Ícones dentro dos campos */
+        .form-group i {
+            position: absolute;
+            left: 10px;
+            top: 38px; /* Alinhado com o campo */
+            color: #aaa;
+            font-size: 20px;
+        }
+
+        /* Efeito de foco nos campos */
+        input:focus {
+            outline: none;
+            border-color: #00bfff;
+            box-shadow: 0 0 8px rgba(0, 191, 255, 0.3);
+        }
+
+        /* Estilo dos botões */
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel, .btn-confirm {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cancel {
+            background-color: #e74c3c; /* Vermelho */
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-confirm {
+            background-color: #00bfff; /* Azul claro */
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background-color: #0072ff; /* Azul mais escuro */
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .btn-cancel, .btn-confirm {
+                width: 100%;
+                margin-top: 10px;
+                margin-right: 0;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <!-- Adicionando uma biblioteca de ícones como o Font Awesome para os ícones -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Título centralizado -->
+    <div class="titulo">Editar Dados do Usuário</div>
+
+    <!-- Container principal -->
+    <div class="container">
+        <form>
+            <!-- Campo Nome com ícone -->
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <i class="fas fa-user"></i>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome">
+            </div>
+
+            <!-- Campo E-mail com ícone -->
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
+            </div>
+
+            <!-- Campo Login com ícone -->
+            <div class="form-group">
+                <label for="login">Login</label>
+                <i class="fas fa-user-circle"></i>
+                <input type="text" id="login" name="login" placeholder="Digite seu login">
+            </div>
+
+            <!-- Campo Senha com ícone -->
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha">
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="buttons">
+                <button type="button" class="btn-cancel">Cancelar</button>
+                <button type="submit" class="btn-confirm">Confirmar</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
