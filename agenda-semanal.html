@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda Semanal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        body {
             display: flex;
         }
 
@@ -49,82 +53,136 @@
 
         .container {
             flex: 1;
-            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         h1 {
             text-align: center;
+            position: relative;
         }
 
         .agenda {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
+            flex-grow: 1;
+            border: 1px solid #ddd; /* Caixa envolvendo todos os dias */
+            border-radius: 5px;
+            overflow: hidden;
         }
 
         .dia {
-            width: 30%;
-            background-color: #f9f9f9;
-            margin: 10px 0;
+            flex: 1;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            position: relative;
+            align-items: center; /* Alinha o conteúdo ao centro */
+            cursor: pointer; /* Cursor para indicar que é clicável */
+        }
+
+        .dia:not(:last-child) {
+            border-right: 1px solid #ddd; /* Separador vertical entre os dias */
         }
 
         .dia h2 {
             text-align: center;
+            font-size: 19px; /* Tamanho de fonte ajustado para 19px */
+            margin-bottom: 10px; /* Adicionado espaço abaixo do título */
+            margin-top: 30px; /* Margem superior maior para mover os dias mais para baixo */
         }
 
-        .input-wrapper {
-            display: flex;
-            justify-content: space-between;
+        ul {
+            list-style-type: none;
+            padding: 0;
+            flex-grow: 1;
+            text-align: center; /* Centraliza o conteúdo da lista */
         }
 
-        input {
-            width: 70%;
-            padding: 5px;
-            margin-top: 5px;
-            box-sizing: border-box;
+        .data {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
         }
 
-        .input-extra {
-            width: 25%;
-            padding: 5px;
-            margin-top: 5px;
-            box-sizing: border-box;
-            margin-right: 5px;
+        /* Estilo da caixa modal */
+        .modal {
+            display: none; /* Inicialmente escondida */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px; /* Largura fixa para a modal */
+        }
+
+        .close {
+            cursor: pointer;
+            color: #007bff;
+            margin-top: 10px;
+        }
+
+        input[type="text"], input[type="time"], textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
         button {
-            width: 100%;
-            padding: 5px;
-            margin-top: 5px;
             background-color: #007bff;
-            color: #fff;
+            color: white;
             border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
 
-        .remove-btn {
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 2px 5px;
-            margin-left: 10px;
-            cursor: pointer;
+        .button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+        }
+
+        .button-container button {
+            margin-left: 10px; /* Espaçamento entre os botões */
         }
     </style>
 </head>
@@ -135,132 +193,171 @@
             <li><a href="#">Perfil</a></li>
             <li><a href="#">Agenda de Remédios</a></li>
             <li><a href="#">Histórico de Agendas</a></li>
+            <li><a href="#">Sair</a></li> <!-- Botão Sair -->
         </ul>
     </div>
     <div class="container">
         <h1>Agenda de Remédios</h1>
+        <div class="button-container"> <!-- Div para os botões de salvar e baixar -->
+            <button class="save-button" onclick="salvarAgenda()">Salvar Agenda</button> <!-- Botão de Salvar Agenda -->
+            <button class="download-button" onclick="baixarAgenda()">Baixar Agenda</button> <!-- Botão de Baixar Agenda -->
+        </div>
         <div class="agenda">
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Segunda-feira</h2>
+                <span class="data" id="data-segunda"></span>
                 <ul id="lista-segunda"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-segunda" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-segunda" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('segunda')">Adicionar</button>
             </div>
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Terça-feira</h2>
+                <span class="data" id="data-terca"></span>
                 <ul id="lista-terca"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-terca" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-terca" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('terca')">Adicionar</button>
             </div>
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Quarta-feira</h2>
+                <span class="data" id="data-quarta"></span>
                 <ul id="lista-quarta"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-quarta" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-quarta" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('quarta')">Adicionar</button>
             </div>
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Quinta-feira</h2>
+                <span class="data" id="data-quinta"></span>
                 <ul id="lista-quinta"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-quinta" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-quinta" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('quinta')">Adicionar</button>
             </div>
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Sexta-feira</h2>
+                <span class="data" id="data-sexta"></span>
                 <ul id="lista-sexta"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-sexta" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-sexta" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('sexta')">Adicionar</button>
             </div>
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Sábado</h2>
+                <span class="data" id="data-sabado"></span>
                 <ul id="lista-sabado"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-sabado" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-sabado" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('sabado')">Adicionar</button>
             </div>
-            <div class="dia">
+            <div class="dia" onclick="abrirModal()">
                 <h2>Domingo</h2>
+                <span class="data" id="data-domingo"></span>
                 <ul id="lista-domingo"></ul>
-                <div class="input-wrapper">
-                    <input type="text" id="input-domingo" placeholder="Adicionar remédio">
-                    <input type="text" class="input-extra" id="extra-input-domingo" placeholder="Horário">
-                </div>
-                <button onclick="adicionarRemedio('domingo')">Adicionar</button>
             </div>
         </div>
-        <button onclick="salvarAgenda()">Salvar Agenda</button>
+    </div>
+
+    <!-- Caixa modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>Adicionar Remédio</h2> <!-- Removido o dia da semana do título -->
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="check-segunda"> S</label>
+                <label><input type="checkbox" id="check-terca"> T</label>
+                <label><input type="checkbox" id="check-quarta"> Q</label>
+                <label><input type="checkbox" id="check-quinta"> Q</label>
+                <label><input type="checkbox" id="check-sexta"> S</label>
+                <label><input type="checkbox" id="check-sabado"> S</label>
+                <label><input type="checkbox" id="check-domingo"> D</label>
+            </div>
+            <form id="form-remedio" onsubmit="adicionarRemedio(event)">
+                <input type="text" id="remedio" placeholder="Nome do Remédio" required>
+                <input type="time" id="horario" required>
+                <input type="file" id="imagem" accept="image/*"> <!-- Campo para enviar imagem -->
+                <textarea id="observacoes" placeholder="Observações" rows="4"></textarea>
+                <button type="submit">Adicionar Remédio</button>
+                <span class="close" onclick="fecharModal()">Fechar</span>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Função para adicionar um remédio ao dia correspondente
-        function adicionarRemedio(dia) {
-            const inputRemedio = document.getElementById(`input-${dia}`);
-            const inputExtra = document.getElementById(`extra-input-${dia}`);
-            const lista = document.getElementById(`lista-${dia}`);
+        // Função para gerar as datas da semana
+        function gerarDatasDaSemana() {
+            const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+            const hoje = new Date(); // Data atual
+            const diaDaSemanaAtual = hoje.getDay(); // Dia da semana atual (0 = domingo, 6 = sábado)
+            const primeiroDiaSemana = new Date(hoje); 
 
-            if (inputRemedio.value.trim() !== "") {
-                const novoRemedio = document.createElement("li");
+            // Ajusta para o início da semana (segunda-feira)
+            primeiroDiaSemana.setDate(hoje.getDate() - ((diaDaSemanaAtual + 6) % 7));
 
-                if (inputExtra.value.trim() !== "") {
-                    novoRemedio.textContent = `${inputRemedio.value} - ${inputExtra.value}`;
-                } else {
-                    novoRemedio.textContent = inputRemedio.value;
-                }
-
-                // Botão para remover o remédio
-                const botaoRemover = document.createElement("button");
-                botaoRemover.textContent = "Remover";
-                botaoRemover.classList.add("remove-btn");
-                botaoRemover.onclick = function() {
-                    lista.removeChild(novoRemedio);
-                };
-
-                // Adiciona o botão de remover ao remédio
-                novoRemedio.appendChild(botaoRemover);
-
-                // Adiciona o remédio na lista do dia
-                lista.appendChild(novoRemedio);
+            dias.forEach((dia, index) => {
+                const dataElemento = document.getElementById(`data-${dia}`);
+                const dataAtual = new Date(primeiroDiaSemana);
+                dataAtual.setDate(primeiroDiaSemana.getDate() + index);
                 
-                // Limpa os campos de input
-                inputRemedio.value = "";
-                inputExtra.value = "";
-            }
-        }
-
-        // Função para salvar a agenda (sem mensagem de alerta)
-        function salvarAgenda() {
-            const dias = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
-            let agendaTexto = "Agenda:\n";
-
-            dias.forEach(dia => {
-                const listaDia = document.getElementById(`lista-${dia}`);
-                if (listaDia.childNodes.length > 0) {
-                    agendaTexto += `${dia.charAt(0).toUpperCase() + dia.slice(1)}:\n`;
-                    listaDia.childNodes.forEach(remedio => {
-                        agendaTexto += ` - ${remedio.firstChild.textContent}\n`;
-                    });
-                }
+                const diaMes = dataAtual.getDate();
+                const mes = dataAtual.getMonth() + 1; // Meses começam do 0
+                const ano = dataAtual.getFullYear();
+                
+                dataElemento.textContent = `${diaMes}/${mes}/${ano}`;
             });
-
-            // Aqui você pode processar a agenda como necessário, sem exibir um alerta
-            console.log(agendaTexto); // Exemplo: salvar no console
         }
+
+        // Função para abrir a modal
+        function abrirModal() {
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // Função para fechar a modal
+        function fecharModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('form-remedio').reset(); // Limpa o formulário
+            document.querySelectorAll('.modal input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false; // Limpa os checkboxes
+            });
+        }
+
+        // Função para adicionar remédio na lista do dia selecionado
+        function adicionarRemedio(event) {
+            event.preventDefault(); // Evita o envio do formulário
+
+            const remedio = document.getElementById('remedio').value;
+            const horario = document.getElementById('horario').value;
+            const observacoes = document.getElementById('observacoes').value;
+            const imagem = document.getElementById('imagem').files[0]; // Captura a imagem
+
+            const dias = {
+                'check-segunda': 'lista-segunda',
+                'check-terca': 'lista-terca',
+                'check-quarta': 'lista-quarta',
+                'check-quinta': 'lista-quinta',
+                'check-sexta': 'lista-sexta',
+                'check-sabado': 'lista-sabado',
+                'check-domingo': 'lista-domingo'
+            };
+
+            for (const [checkboxId, listaId] of Object.entries(dias)) {
+                const checkbox = document.getElementById(checkboxId);
+                if (checkbox.checked) {
+                    const listaElemento = document.getElementById(listaId);
+                    const li = document.createElement('li');
+                    li.textContent = `${remedio} - ${horario} ${observacoes ? `(${observacoes})` : ''}`;
+
+                    // Se uma imagem foi selecionada, adiciona um link para visualizá-la
+                    if (imagem) {
+                        const imgUrl = URL.createObjectURL(imagem);
+                        const imgLink = document.createElement('a');
+                        imgLink.href = imgUrl;
+                        imgLink.target = '_blank';
+                        imgLink.textContent = ' Ver Imagem'; // Texto do link para visualizar a imagem
+                        li.appendChild(imgLink);
+                    }
+                    
+                    listaElemento.appendChild(li);
+                }
+            }
+
+            fecharModal(); // Fecha a modal após adicionar
+        }
+
+        // Função para salvar a agenda (sem implementação específica)
+        function salvarAgenda() {
+            alert('Agenda salva com sucesso!'); // Mensagem de sucesso, você pode implementar lógica de salvamento real
+        }
+
+        // Função para baixar a agenda (sem implementação específica)
+        function baixarAgenda() {
+            alert('Função de baixar agenda ainda não implementada!'); // Mensagem de informação
+        }
+
+        // Chama a função para gerar as datas
+        gerarDatasDaSemana();
     </script>
 </body>
 </html>
