@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda Semanal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> <!-- Incluindo a biblioteca html2canvas -->
     <style>
         html, body {
             height: 100%;
@@ -202,7 +204,7 @@
             <button class="save-button" onclick="salvarAgenda()">Salvar Agenda</button> <!-- Botão de Salvar Agenda -->
             <button class="download-button" onclick="baixarAgenda()">Baixar Agenda</button> <!-- Botão de Baixar Agenda -->
         </div>
-        <div class="agenda">
+        <div class="agenda" id="agenda"> <!-- Adicionado ID "agenda" -->
             <div class="dia" onclick="abrirModal()">
                 <h2>Segunda-feira</h2>
                 <span class="data" id="data-segunda"></span>
@@ -257,7 +259,7 @@
             <form id="form-remedio" onsubmit="adicionarRemedio(event)">
                 <input type="text" id="remedio" placeholder="Nome do Remédio" required>
                 <input type="time" id="horario" required>
-                <input type="file" id="imagem" accept="image/*"> <!-- Campo para enviar imagem -->
+                <input type="file" id="imagem">
                 <textarea id="observacoes" placeholder="Observações" rows="4"></textarea>
                 <button type="submit">Adicionar Remédio</button>
                 <span class="close" onclick="fecharModal()">Fechar</span>
@@ -266,6 +268,8 @@
     </div>
 
     <script>
+        const { jsPDF } = window.jspdf; // Acessa a biblioteca jsPDF
+
         // Função para gerar as datas da semana
         function gerarDatasDaSemana() {
             const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
@@ -351,9 +355,16 @@
             alert('Agenda salva com sucesso!'); // Mensagem de sucesso, você pode implementar lógica de salvamento real
         }
 
-        // Função para baixar a agenda (sem implementação específica)
+        // Função para baixar a agenda como PDF
         function baixarAgenda() {
-            alert('Função de baixar agenda ainda não implementada!'); // Mensagem de informação
+            const agendaElement = document.getElementById('agenda'); // Captura a div da agenda
+
+            html2canvas(agendaElement).then(canvas => {
+                const imgData = canvas.toDataURL('image/png'); // Converte a div em imagem
+                const doc = new jsPDF();
+                doc.addImage(imgData, 'PNG', 10, 10, 190, 0); // Adiciona a imagem ao PDF
+                doc.save("agenda_remedios.pdf"); // Salva o PDF com o nome "agenda_remedios.pdf"
+            });
         }
 
         // Chama a função para gerar as datas
