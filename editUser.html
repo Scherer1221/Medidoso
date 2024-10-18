@@ -15,12 +15,10 @@
             margin: 0;
             padding: 0;
             color: #333;
-            background: linear-gradient(180deg, #00bfff 0%, #0072ff 100%);
-            height: 100vh;
+            background-color: #0072ff; /* Cor sólida */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         /* Título da página */
@@ -34,15 +32,17 @@
             text-align: center;
             background: #00a4e4; /* Tom mais escuro para o cabeçalho */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: absolute;
+            position: fixed;
             top: 0; /* Posiciona o título no topo da página */
+            left: 0;
+            z-index: 1;
         }
 
         /* Container principal */
         .container {
             max-width: 600px;
             width: 100%;
-            margin-top: 100px;
+            margin-top: 160px; /* Espaço para compensar o título fixo */
             background-color: white;
             padding: 30px;
             border-radius: 16px;
@@ -130,6 +130,15 @@
             background-color: #0072ff; /* Azul mais escuro */
         }
 
+        /* Estilo da mensagem de erro */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
         /* Responsividade */
         @media (max-width: 768px) {
             .container {
@@ -158,7 +167,7 @@
 
     <!-- Container principal -->
     <div class="container">
-        <form>
+        <form id="formulario">
             <!-- Campo Nome com ícone -->
             <div class="form-group">
                 <label for="nome">Nome</label>
@@ -173,19 +182,23 @@
                 <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
             </div>
 
-            <!-- Campo Login com ícone -->
-            <div class="form-group">
-                <label for="login">Login</label>
-                <i class="fas fa-user-circle"></i>
-                <input type="text" id="login" name="login" placeholder="Digite seu login">
-            </div>
-
             <!-- Campo Senha com ícone -->
             <div class="form-group">
                 <label for="senha">Senha</label>
                 <i class="fas fa-lock"></i>
                 <input type="password" id="senha" name="senha" placeholder="Digite sua senha">
             </div>
+
+            <!-- Campo Confirmar Senha com ícone -->
+            <div class="form-group">
+                <label for="confirmar-senha">Confirmar Senha</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="Confirme sua senha">
+            </div>
+
+            <!-- Mensagem de erro -->
+            <div class="error-message" id="error-message">As senhas não coincidem!</div>
+            <div class="error-message" id="same-password-message">A nova senha não pode ser igual à senha atual!</div>
 
             <!-- Botões de Ação -->
             <div class="buttons">
@@ -194,6 +207,43 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            const senha = document.getElementById("senha").value;
+            const confirmarSenha = document.getElementById("confirmar-senha").value;
+            const errorMessage = document.getElementById("error-message");
+            const samePasswordMessage = document.getElementById("same-password-message");
+
+            // Simulando a senha atual (esta informação deve vir do backend ou de uma variável).
+            const senhaAtual = "senha123"; 
+
+            let valid = true;
+
+            // Verifica se as senhas são iguais
+            if (senha !== confirmarSenha) {
+                event.preventDefault(); // Impede o envio do formulário
+                errorMessage.style.display = "block"; // Exibe a mensagem de erro de senhas diferentes
+                valid = false;
+            } else {
+                errorMessage.style.display = "none"; // Oculta a mensagem de erro se as senhas coincidirem
+            }
+
+            // Verifica se a nova senha é igual à senha atual
+            if (senha === senhaAtual) {
+                event.preventDefault(); // Impede o envio do formulário
+                samePasswordMessage.style.display = "block"; // Exibe a mensagem de erro se a senha for igual à atual
+                valid = false;
+            } else {
+                samePasswordMessage.style.display = "none"; // Oculta a mensagem de erro
+            }
+
+            // Impede o envio se qualquer validação falhar
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    </script>
 
 </body>
 </html>
