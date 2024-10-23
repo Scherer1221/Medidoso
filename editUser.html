@@ -102,7 +102,7 @@
             margin-top: 20px;
         }
 
-        .btn-cancel, .btn-confirm {
+        .btn-cancel, .btn-confirm, .btn-back {
             padding: 12px 20px;
             font-size: 16px;
             border: none;
@@ -127,6 +127,18 @@
         }
 
         .btn-confirm:hover {
+            background-color: #0072ff; /* Azul mais escuro */
+        }
+
+        .btn-back {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00bfff; /* Azul claro */
+            color: white;
+        }
+
+        .btn-back:hover {
             background-color: #0072ff; /* Azul mais escuro */
         }
 
@@ -207,6 +219,9 @@
             </div>
         </form>
     </div>
+
+    <!-- Botão Voltar no canto inferior direito -->
+    <button class="btn-back">Voltar à Página Inicial</button>
 
     <script>
         document.getElementById("formulario").addEventListener("submit", function(event) {
