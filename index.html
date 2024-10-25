@@ -61,8 +61,9 @@
             box-sizing: border-box;
         }
 
+        /* Altera a cor de todos os botões (exceto os vermelhos) para #FEC364 */
         .button {
-            background-color: #5cb85c;
+            background-color: #FEC364;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -74,9 +75,10 @@
         }
 
         .button:hover {
-            background-color: #4cae4c;
+            background-color: #e6a751;
         }
 
+        /* Mantém a cor vermelha dos botões do Google */
         .google-button {
             background-color: #dc3545;
         }
@@ -248,19 +250,13 @@
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     showToast("Login realizado com sucesso!");
-                    showContainer('initialContainer');
+                    // Redireciona para agenda-semanal.html após o login
+                    window.location.href = "agenda-semanal.html"; // Ajuste o caminho se necessário
                 })
                 .catch((error) => {
                     const errorCode = error.code;
-                    let errorMessage = "Erro ao fazer login.";
-
-                    if (errorCode === 'auth/user-not-found') {
-                        errorMessage = "Esse usuário não existe";
-                    } else if (errorCode === 'auth/wrong-password') {
-                        errorMessage = "Senha incorreta";
-                    }
-
-                    showToast(errorMessage, true);
+                    const errorMessage = error.message;
+                    showToast("Erro: " + errorMessage, true);
                 });
         });
 
@@ -268,22 +264,17 @@
             event.preventDefault();
             const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
-            const newPassword = document.getElementById('newPassword').value;
+            const password = document.getElementById('newPassword').value;
 
-            createUserWithEmailAndPassword(auth, email, newPassword)
+            createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     showToast("Conta criada com sucesso!");
                     showContainer('initialContainer');
                 })
                 .catch((error) => {
                     const errorCode = error.code;
-                    let errorMessage = "Erro ao criar conta.";
-
-                    if (errorCode === 'auth/email-already-in-use') {
-                        errorMessage = "Esse e-mail já está em uso.";
-                    }
-
-                    showToast(errorMessage, true);
+                    const errorMessage = error.message;
+                    showToast("Erro: " + errorMessage, true);
                 });
         });
 

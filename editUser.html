@@ -214,50 +214,118 @@
 
             <!-- Botões de Ação -->
             <div class="buttons">
-                <button type="button" class="btn-cancel">Cancelar</button>
+                <button type="button" class="btn-cancel" onclick="voltarParaAgenda()">Cancelar</button>
                 <button type="submit" class="btn-confirm">Confirmar</button>
             </div>
         </form>
     </div>
 
     <!-- Botão Voltar no canto inferior direito -->
-    <button class="btn-back">Voltar à Página Inicial</button>
+    <button class="btn-back" onclick="voltarParaAgenda()">Voltar à Página Inicial</button>
+
+    <!-- Importação do SDK do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore.js"></script>
 
     <script>
-        document.getElementById("formulario").addEventListener("submit", function(event) {
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMQtt7KP30AcHi72FHtaZtZOXIYL7DVv0",
+            authDomain: "medidoso.firebaseapp.com",
+            projectId: "medidoso",
+            storageBucket: "medidoso.appspot.com",
+            messagingSenderId: "1006734497522",
+            appId: "1:1006734497522:web:98f5911a09c35146bb626b",
+            databaseURL: "https://medidoso-default-rtdb.firebaseio.com"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Função para buscar e preencher os dados do usuário
+        function carregarDadosDoUsuario() {
+            const user = auth.currentUser;
+            if (user) {
+                const userId = user.uid;
+                const userRef = db.collection('medidoso').doc('usuario').collection(userId).doc('perfil');
+                userRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        document.getElementById("nome").value = userData.nome || '';
+                        document.getElementById("email").value = userData.email || '';
+                    }
+                }).catch((error) => {
+                    console.log("Erro ao obter os dados do usuário:", error);
+                });
+            }
+        }
+
+        // Função para atualizar os dados do usuário
+        function atualizarDadosDoUsuario(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
             const senha = document.getElementById("senha").value;
             const confirmarSenha = document.getElementById("confirmar-senha").value;
-            const errorMessage = document.getElementById("error-message");
-            const samePasswordMessage = document.getElementById("same-password-message");
+            const user = auth.currentUser;
+            const userId = user.uid;
 
-            // Simulando a senha atual (esta informação deve vir do backend ou de uma variável).
-            const senhaAtual = "senha123"; 
-
-            let valid = true;
-
-            // Verifica se as senhas são iguais
+            // Verificações de validação
             if (senha !== confirmarSenha) {
-                event.preventDefault(); // Impede o envio do formulário
-                errorMessage.style.display = "block"; // Exibe a mensagem de erro de senhas diferentes
-                valid = false;
-            } else {
-                errorMessage.style.display = "none"; // Oculta a mensagem de erro se as senhas coincidirem
+                document.getElementById("error-message").style.display = 'block';
+                return;
             }
 
-            // Verifica se a nova senha é igual à senha atual
-            if (senha === senhaAtual) {
-                event.preventDefault(); // Impede o envio do formulário
-                samePasswordMessage.style.display = "block"; // Exibe a mensagem de erro se a senha for igual à atual
-                valid = false;
-            } else {
-                samePasswordMessage.style.display = "none"; // Oculta a mensagem de erro
-            }
+            // Atualizar dados de autenticação (email e senha)
+            if (user) {
+                if (email !== user.email) {
+                    user.updateEmail(email).then(() => {
+                        console.log("E-mail atualizado com sucesso.");
+                    }).catch((error) => {
+                        console.error("Erro ao atualizar o e-mail:", error);
+                    });
+                }
 
-            // Impede o envio se qualquer validação falhar
-            if (!valid) {
-                event.preventDefault();
+                if (senha) {
+                    user.updatePassword(senha).then(() => {
+                        console.log("Senha atualizada com sucesso.");
+                    }).catch((error) => {
+                        console.error("Erro ao atualizar a senha:", error);
+                    });
+                }
+
+                // Atualizar dados no Firestore
+                db.collection('medidoso').doc('usuario').collection(userId).doc('perfil').update({
+                    nome: nome,
+                    email: email
+                }).then(() => {
+                    console.log("Dados atualizados no Firestore com sucesso.");
+                }).catch((error) => {
+                    console.error("Erro ao atualizar os dados no Firestore:", error);
+                });
+            }
+        }
+
+        // Escutar o evento de submissão do formulário
+        document.getElementById("formulario").addEventListener("submit", atualizarDadosDoUsuario);
+
+        // Carregar dados do usuário ao iniciar
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                carregarDadosDoUsuario();
+            } else {
+                console.log("Nenhum usuário autenticado.");
             }
         });
+
+        // Função para redirecionar para a agenda semanal
+        function voltarParaAgenda() {
+            window.location.href = "/agenda-semanal.html";
+        }
     </script>
 
 </body>
