@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda Semanal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> <!-- Incluindo a biblioteca html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <style>
         html, body {
             height: 100%;
@@ -13,10 +13,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-        }
-
-        body {
-            display: flex;
+            position: relative; /* Adicionado para ajudar na sobreposição */
         }
 
         .menu {
@@ -25,10 +22,11 @@
             color: white;
             padding: 15px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .menu h2 {
-            text-align: center;
+            position: absolute;
+            top: 0;
+            left: -220px; /* Inicialmente fora da tela */
+            transition: left 0.3s ease;
+            z-index: 1000; /* Para garantir que o menu sobreponha outros elementos */
         }
 
         .menu ul {
@@ -62,6 +60,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            position: relative; /* Mantido para manter a estrutura */
         }
 
         h1 {
@@ -73,9 +72,10 @@
             display: flex;
             justify-content: space-between;
             flex-grow: 1;
-            border: 1px solid #ddd; /* Caixa envolvendo todos os dias */
+            border: 1px solid #ddd;
             border-radius: 5px;
             overflow: hidden;
+            position: relative; /* Para manter a estrutura */
         }
 
         .dia {
@@ -86,32 +86,33 @@
             background-color: #f9f9f9;
             box-sizing: border-box;
             position: relative;
-            align-items: center; /* Alinha o conteúdo ao centro */
-            cursor: pointer; /* Cursor para indicar que é clicável */
+            align-items: center;
+            cursor: pointer;
         }
 
         .dia:not(:last-child) {
-            border-right: 1px solid #ddd; /* Separador vertical entre os dias */
+            border-right: 1px solid #ddd;
         }
 
         .dia h2 {
             text-align: center;
-            font-size: 19px; /* Tamanho de fonte ajustado para 19px */
-            margin-bottom: 10px; /* Adicionado espaço abaixo do título */
-            margin-top: 30px; /* Margem superior maior para mover os dias mais para baixo */
+            font-size: 19px;
+            margin-bottom: 10px;
+            margin-top: 30px;
         }
 
         ul {
             list-style-type: none;
             padding: 0;
             flex-grow: 1;
-            text-align: center; /* Centraliza o conteúdo da lista */
+            text-align: center;
         }
 
         .data {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 50%; /* Centraliza horizontalmente */
+            transform: translateX(-50%); /* Ajusta a centralização */
             font-weight: bold;
             background-color: #007bff;
             color: white;
@@ -119,9 +120,8 @@
             border-radius: 3px;
         }
 
-        /* Estilo da caixa modal */
         .modal {
-            display: none; /* Inicialmente escondida */
+            display: none;
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -139,7 +139,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             text-align: center;
-            width: 300px; /* Largura fixa para a modal */
+            width: 300px;
         }
 
         .close {
@@ -154,6 +154,7 @@
             margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-sizing: border-box; /* Mantém o tamanho da caixa */
         }
 
         button {
@@ -179,32 +180,33 @@
         .button-container {
             position: absolute;
             top: 20px;
-            right: 20px;
-            display: flex;
+            left: 20px; /* Posição do botão de menu */
+            z-index: 1001; /* Para garantir que o botão esteja acima do menu */
         }
 
-        .button-container button {
-            margin-left: 10px; /* Espaçamento entre os botões */
+        .download-button {
+            position: absolute;
+            top: 20px;
+            right: 20px; /* Posição do botão de baixar agenda */
+            z-index: 1001; /* Para garantir que o botão esteja acima do menu */
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <h2>Menu</h2>
+    <div class="button-container">
+        <button onclick="toggleMenu()">☰</button> <!-- Somente as três listras -->
+    </div>
+    <div class="menu" id="menu">
         <ul>
-            <li><a href="editUser.html">Perfil</a></li> <!-- Atualizado para redirecionar para a página editUser.html -->
-            <li><a href="#">Agenda de Remédios</a></li>
+            <li><a href="editUser.html">Perfil</a></li>
             <li><a href="#">Histórico de Agendas</a></li>
-            <li><a href="C:\Users\Guilherme\Documents\GitHub\Medidoso\public\index.html">Sair</a></li> <!-- Redireciona para index.html -->     
+            <li><a href="C:\Users\Guilherme\Documents\GitHub\Medidoso\public\index.html">Sair</a></li>
         </ul>
     </div>    
     <div class="container">
         <h1>Agenda de Remédios</h1>
-        <div class="button-container"> <!-- Div para os botões de salvar e baixar -->
-            <button class="save-button" onclick="salvarAgenda()">Salvar Agenda</button> <!-- Botão de Salvar Agenda -->
-            <button class="download-button" onclick="baixarAgenda()">Baixar Agenda</button> <!-- Botão de Baixar Agenda -->
-        </div>
-        <div class="agenda" id="agenda"> <!-- Adicionado ID "agenda" -->
+        <button class="download-button" onclick="baixarAgenda()">Baixar Agenda</button>
+        <div class="agenda" id="agenda">
             <div class="dia" onclick="abrirModal()">
                 <h2>Segunda-feira</h2>
                 <span class="data" id="data-segunda"></span>
@@ -243,10 +245,9 @@
         </div>
     </div>
 
-    <!-- Caixa modal -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2>Adicionar Remédio</h2> <!-- Removido o dia da semana do título -->
+            <h2>Adicionar Remédio</h2>
             <div class="checkbox-group">
                 <label><input type="checkbox" id="check-segunda"> S</label>
                 <label><input type="checkbox" id="check-terca"> T</label>
@@ -257,117 +258,97 @@
                 <label><input type="checkbox" id="check-domingo"> D</label>
             </div>
             <form id="form-remedio" onsubmit="adicionarRemedio(event)">
-                <input type="text" id="remedio" placeholder="Nome do Remédio" required>
-                <input type="time" id="horario" required>
-                <input type="file" id="imagem">
-                <textarea id="observacoes" placeholder="Observações" rows="4"></textarea>
-                <button type="submit">Adicionar Remédio</button>
-                <span class="close" onclick="fecharModal()">Fechar</span>
+                <input type="text" id="remedio" placeholder="Nome do remédio" required>
+                <input type="time" id="horario" placeholder="Horário" required>
+                <textarea id="observacoes" rows="3" placeholder="Observações" style="text-align: center;"></textarea>
+                <button type="submit">Adicionar</button>
+                <div class="close" onclick="fecharModal()">Fechar</div>
             </form>
         </div>
     </div>
 
     <script>
-        const { jsPDF } = window.jspdf; // Acessa a biblioteca jsPDF
+        const menu = document.getElementById('menu');
 
-        // Função para gerar as datas da semana
+        function toggleMenu() {
+            if (menu.style.left === '0px') {
+                menu.style.left = '-220px'; // Oculta o menu
+            } else {
+                menu.style.left = '0px'; // Exibe o menu
+            }
+        }
+
+        document.addEventListener('click', (event) => {
+            const isClickInsideMenu = menu.contains(event.target);
+            const isClickInsideButton = document.querySelector('.button-container').contains(event.target);
+            const isMenuOpen = menu.style.left === '0px';
+
+            if (!isClickInsideMenu && !isClickInsideButton && isMenuOpen) {
+                menu.style.left = '-220px'; // Fecha o menu se o clique foi fora do menu e do botão
+            }
+        });
+
+        const hoje = new Date();
+
         function gerarDatasDaSemana() {
             const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
-            const hoje = new Date(); // Data atual
-            const diaDaSemanaAtual = hoje.getDay(); // Dia da semana atual (0 = domingo, 6 = sábado)
-            const primeiroDiaSemana = new Date(hoje); 
+            const dataDaSemana = [];
 
-            // Ajusta para o início da semana (segunda-feira)
-            primeiroDiaSemana.setDate(hoje.getDate() - ((diaDaSemanaAtual + 6) % 7));
+            for (let i = 0; i < 7; i++) {
+                const data = new Date(hoje);
+                data.setDate(hoje.getDate() + (i - hoje.getDay() + 1) % 7);
+                dataDaSemana.push(data.toLocaleDateString('pt-BR'));
+            }
 
             dias.forEach((dia, index) => {
-                const dataElemento = document.getElementById(`data-${dia}`);
-                const dataAtual = new Date(primeiroDiaSemana);
-                dataAtual.setDate(primeiroDiaSemana.getDate() + index);
-                
-                const diaMes = dataAtual.getDate();
-                const mes = dataAtual.getMonth() + 1; // Meses começam do 0
-                const ano = dataAtual.getFullYear();
-                
-                dataElemento.textContent = `${diaMes}/${mes}/${ano}`;
+                document.getElementById(`data-${dia}`).innerText = dataDaSemana[index];
             });
         }
 
-        // Função para abrir a modal
         function abrirModal() {
             document.getElementById('modal').style.display = 'flex';
         }
 
-        // Função para fechar a modal
         function fecharModal() {
             document.getElementById('modal').style.display = 'none';
-            document.getElementById('form-remedio').reset(); // Limpa o formulário
-            document.querySelectorAll('.modal input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false; // Limpa os checkboxes
-            });
         }
 
-        // Função para adicionar remédio na lista do dia selecionado
         function adicionarRemedio(event) {
-            event.preventDefault(); // Evita o envio do formulário
-
+            event.preventDefault();
             const remedio = document.getElementById('remedio').value;
             const horario = document.getElementById('horario').value;
             const observacoes = document.getElementById('observacoes').value;
-            const imagem = document.getElementById('imagem').files[0]; // Captura a imagem
+            const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+            const diasSelecionados = [];
 
-            const dias = {
-                'check-segunda': 'lista-segunda',
-                'check-terca': 'lista-terca',
-                'check-quarta': 'lista-quarta',
-                'check-quinta': 'lista-quinta',
-                'check-sexta': 'lista-sexta',
-                'check-sabado': 'lista-sabado',
-                'check-domingo': 'lista-domingo'
-            };
-
-            for (const [checkboxId, listaId] of Object.entries(dias)) {
-                const checkbox = document.getElementById(checkboxId);
+            checkboxes.forEach((checkbox, index) => {
                 if (checkbox.checked) {
-                    const listaElemento = document.getElementById(listaId);
-                    const li = document.createElement('li');
-                    li.textContent = `${remedio} - ${horario} ${observacoes ? `(${observacoes})` : ''}`;
-
-                    // Se uma imagem foi selecionada, adiciona um link para visualizá-la
-                    if (imagem) {
-                        const imgUrl = URL.createObjectURL(imagem);
-                        const imgLink = document.createElement('a');
-                        imgLink.href = imgUrl;
-                        imgLink.target = '_blank';
-                        imgLink.textContent = ' Ver Imagem'; // Texto do link para visualizar a imagem
-                        li.appendChild(imgLink);
-                    }
-                    
-                    listaElemento.appendChild(li);
+                    diasSelecionados.push(index);
                 }
-            }
+            });
 
-            fecharModal(); // Fecha a modal após adicionar
+            diasSelecionados.forEach(dia => {
+                const diaNome = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'][dia];
+                const lista = document.getElementById(`lista-${diaNome}`);
+                const li = document.createElement('li');
+                li.textContent = `${remedio} - ${horario} ${observacoes}`;
+                lista.appendChild(li);
+            });
+
+            fecharModal();
+            document.getElementById('form-remedio').reset();
         }
 
-        // Função para salvar a agenda (sem implementação específica)
-        function salvarAgenda() {
-            alert('Agenda salva com sucesso!'); // Mensagem de sucesso, você pode implementar lógica de salvamento real
-        }
-
-        // Função para baixar a agenda como PDF
         function baixarAgenda() {
-            const agendaElement = document.getElementById('agenda'); // Captura a div da agenda
-
-            html2canvas(agendaElement).then(canvas => {
-                const imgData = canvas.toDataURL('image/png'); // Converte a div em imagem
-                const doc = new jsPDF();
-                doc.addImage(imgData, 'PNG', 10, 10, 190, 0); // Adiciona a imagem ao PDF
-                doc.save("agenda_remedios.pdf"); // Salva o PDF com o nome "agenda_remedios.pdf"
+            const element = document.getElementById('agenda');
+            html2canvas(element).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                pdf.addImage(imgData, 'PNG', 0, 0);
+                pdf.save("agenda.png");
             });
         }
 
-        // Chama a função para gerar as datas
         gerarDatasDaSemana();
     </script>
 </body>
