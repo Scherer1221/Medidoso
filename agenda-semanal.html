@@ -190,11 +190,53 @@
             right: 20px; /* Posição do botão de baixar agenda */
             z-index: 1001; /* Para garantir que o botão esteja acima do menu */
         }
+
+        .img-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 200px; /* Limita a altura da imagem */
+        }
+
+        .remove-button {
+            background-color: transparent; /* Fundo transparente para o botão de remoção */
+            color: #dc3545; /* Cor do símbolo de remoção */
+            border: none; /* Sem borda */
+            cursor: pointer; /* Cursor de ponteiro */
+            font-size: 20px; /* Tamanho da fonte */
+            margin-left: 10px; /* Espaço à esquerda do símbolo */
+        }
+
+        /* Estilo para as listras do botão do menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 60px; /* Ajuste para estar abaixo do botão */
+            left: 20px; /* Abaixo do botão do menu */
+            z-index: 1001;
+        }
+
+        .menu-toggle div {
+            width: 30px; /* Largura das listras */
+            height: 4px; /* Altura das listras */
+            background-color: #007bff; /* Cor das listras */
+            margin: 3px 0; /* Espaçamento entre as listras */
+            transition: all 0.3s ease; /* Transição suave */
+        }
+
+        .menu-toggle.show {
+            display: flex; /* Exibe as listras apenas quando o menu está aberto */
+        }
     </style>
 </head>
 <body>
     <div class="button-container">
         <button onclick="toggleMenu()">☰</button> <!-- Somente as três listras -->
+        <div class="menu-toggle" id="menuToggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
     <div class="menu" id="menu">
         <ul>
@@ -261,6 +303,8 @@
                 <input type="text" id="remedio" placeholder="Nome do remédio" required>
                 <input type="time" id="horario" placeholder="Horário" required>
                 <textarea id="observacoes" rows="3" placeholder="Observações" style="text-align: center;"></textarea>
+                <input type="file" id="imagem" accept="image/*" onchange="mostrarImagem(event)"> <!-- Campo para upload de imagem -->
+                <img id="imagem-preview" class="img-preview" style="display:none;"> <!-- Preview da imagem -->
                 <button type="submit">Adicionar</button>
                 <div class="close" onclick="fecharModal()">Fechar</div>
             </form>
@@ -269,12 +313,15 @@
 
     <script>
         const menu = document.getElementById('menu');
+        const menuToggle = document.getElementById('menuToggle');
 
         function toggleMenu() {
             if (menu.style.left === '0px') {
                 menu.style.left = '-220px'; // Oculta o menu
+                menuToggle.classList.remove('show'); // Oculta as listras
             } else {
                 menu.style.left = '0px'; // Exibe o menu
+                menuToggle.classList.add('show'); // Exibe as listras
             }
         }
 
@@ -285,6 +332,7 @@
 
             if (!isClickInsideMenu && !isClickInsideButton && isMenuOpen) {
                 menu.style.left = '-220px'; // Fecha o menu se o clique foi fora do menu e do botão
+                menuToggle.classList.remove('show'); // Oculta as listras
             }
         });
 
@@ -311,6 +359,22 @@
 
         function fecharModal() {
             document.getElementById('modal').style.display = 'none';
+            document.getElementById('form-remedio').reset(); // Limpa o formulário ao fechar o modal
+            document.getElementById('imagem-preview').style.display = 'none'; // Oculta a imagem
+        }
+
+        function mostrarImagem(event) {
+            const imagemPreview = document.getElementById('imagem-preview');
+            const arquivo = event.target.files[0];
+
+            if (arquivo) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagemPreview.src = e.target.result;
+                    imagemPreview.style.display = 'block'; // Exibe a imagem
+                }
+                reader.readAsDataURL(arquivo);
+            }
         }
 
         function adicionarRemedio(event) {
@@ -318,6 +382,7 @@
             const remedio = document.getElementById('remedio').value;
             const horario = document.getElementById('horario').value;
             const observacoes = document.getElementById('observacoes').value;
+            const imagemPreview = document.getElementById('imagem-preview').src; // Obtém a imagem
             const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
             const diasSelecionados = [];
 
@@ -332,6 +397,25 @@
                 const lista = document.getElementById(`lista-${diaNome}`);
                 const li = document.createElement('li');
                 li.textContent = `${remedio} - ${horario} ${observacoes}`;
+
+                if (imagemPreview) {
+                    const img = document.createElement('img');
+                    img.src = imagemPreview;
+                    img.className = 'img-preview'; // Adiciona classe para estilização
+                    img.style.maxWidth = '50px'; // Limita a largura da imagem
+                    img.style.marginLeft = '10px'; // Adiciona espaço entre o texto e a imagem
+                    li.appendChild(img); // Adiciona a imagem à lista
+                }
+
+                // Adiciona o botão de remover como símbolo de negativo
+                const removeButton = document.createElement('button');
+                removeButton.textContent = '−'; // Simbolo de negativo
+                removeButton.className = 'remove-button';
+                removeButton.onclick = function() {
+                    lista.removeChild(li); // Remove o item da lista
+                };
+                li.appendChild(removeButton); // Adiciona o botão de remover à lista
+
                 lista.appendChild(li);
             });
 
@@ -340,13 +424,44 @@
         }
 
         function baixarAgenda() {
-            const element = document.getElementById('agenda');
-            html2canvas(element).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
-                pdf.addImage(imgData, 'PNG', 0, 0);
-                pdf.save("agenda.png");
+            const { jsPDF } = window.jspdf; // Acesso ao jsPDF
+            const pdf = new jsPDF();
+            const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+            const colunas = [10, 60, 100]; // Posições das colunas no PDF
+            let y = 10; // Posição vertical inicial
+
+            pdf.setFontSize(18);
+            pdf.text('Agenda de Remédios', 10, y);
+            y += 20; // Espaço após o título
+
+            dias.forEach((dia, index) => {
+                const lista = document.getElementById(`lista-${dia}`);
+                const items = lista.getElementsByTagName('li');
+
+                // Título do dia
+                pdf.setFontSize(14);
+                pdf.text(dia.charAt(0).toUpperCase() + dia.slice(1) + ':', 10, y);
+                y += 10;
+
+                pdf.setFontSize(12);
+                for (let item of items) {
+                    const text = item.innerText.replace('−', '').trim(); // Remove o símbolo de negativo
+                    const [medicamento, ...resto] = text.split(' - ');
+                    const observacoes = resto.join(' - '); // Reunião das observações
+
+                    // Adiciona as informações no formato desejado
+                    pdf.text(medicamento, colunas[0], y);
+                    pdf.text(observacoes, colunas[1], y);
+                    y += 10; // Ajusta a posição vertical
+
+                    // Adiciona uma linha para separar os itens
+                    pdf.line(colunas[0], y, 200, y); 
+                    y += 2; // Espaço entre os itens
+                }
+                y += 10; // Espaço entre os dias
             });
+
+            pdf.save('agenda.pdf'); // Salva o PDF
         }
 
         gerarDatasDaSemana();
