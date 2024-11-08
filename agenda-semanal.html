@@ -13,49 +13,49 @@
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            position: relative; /* Adicionado para ajudar na sobreposição */
+            
         }
 
         .menu {
             width: 200px;
-            background-color: #007bff;
+            background-color: #fec364;
             color: white;
-            padding: 15px;
+            padding: 5px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             position: absolute;
             top: 0;
-            left: -220px; /* Inicialmente fora da tela */
-            transition: left 0.3s ease;
-            z-index: 1000; /* Para garantir que o menu sobreponha outros elementos */
+            left: -400px; /* Inicialmente fora da tela */
+            transition: left 0.4s ease;
+            z-index: 5000; /* Para garantir que o menu sobreponha outros elementos */
         }
 
         .menu ul {
             list-style-type: none;
-            padding: 0;
+            padding: 12;
         }
 
         .menu li {
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
         .menu a {
-            color: white;
+            color: #ffffff;
             text-decoration: none;
             padding: 10px;
             display: block;
-            border-radius: 5px;
+            border-radius: 30px;
             transition: background 0.3s;
         }
 
         .menu a:hover {
-            background-color: #0056b3;
+            background-color: #f0ae45;
         }
 
         .container {
             flex: 1;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: #5eb4e8;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
@@ -114,7 +114,7 @@
             left: 50%; /* Centraliza horizontalmente */
             transform: translateX(-50%); /* Ajusta a centralização */
             font-weight: bold;
-            background-color: #007bff;
+            background-color: #fec364;
             color: white;
             padding: 2px 5px;
             border-radius: 3px;
@@ -158,7 +158,7 @@
         }
 
         button {
-            background-color: #007bff;
+            background-color: #fec364;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -168,8 +168,8 @@
         }
 
         button:hover {
-            background-color: #0056b3;
-        }
+            background-color: #f0ae45;
+        }v
 
         .checkbox-group {
             display: flex;
@@ -216,13 +216,8 @@
             z-index: 1001;
         }
 
-        .menu-toggle div {
-            width: 30px; /* Largura das listras */
-            height: 4px; /* Altura das listras */
-            background-color: #007bff; /* Cor das listras */
-            margin: 3px 0; /* Espaçamento entre as listras */
-            transition: all 0.3s ease; /* Transição suave */
-        }
+    
+        
 
         .menu-toggle.show {
             display: flex; /* Exibe as listras apenas quando o menu está aberto */
@@ -241,7 +236,7 @@
     <div class="menu" id="menu">
         <ul>
             <li><a href="editUser.html">Perfil</a></li>
-            <li><a href="#">Histórico de Agendas</a></li>
+            
             <li><a href="C:\Users\Guilherme\Documents\GitHub\Medidoso\public\index.html">Sair</a></li>
         </ul>
     </div>    
