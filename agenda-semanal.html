@@ -236,8 +236,7 @@
     <div class="menu" id="menu">
         <ul>
             <li><a href="editUser.html">Perfil</a></li>
-            
-            <li><a href="C:\Users\Guilherme\Documents\GitHub\Medidoso\public\index.html">Sair</a></li>
+            <li><a href="index.html" onclick="sair()">Sair</a></li>
         </ul>
     </div>    
     <div class="container">
@@ -319,7 +318,12 @@
                 menuToggle.classList.add('show'); // Exibe as listras
             }
         }
-
+        function sair() {
+            // Exibe o pop-up de desconectando
+            var popup = document.getElementById('popupDesconectando');
+            popup.style.display = 'block';
+        }
+        
         document.addEventListener('click', (event) => {
             const isClickInsideMenu = menu.contains(event.target);
             const isClickInsideButton = document.querySelector('.button-container').contains(event.target);
