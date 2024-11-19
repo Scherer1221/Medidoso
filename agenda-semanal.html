@@ -1,516 +1,516 @@
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Agenda Semanal</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Semanal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
-                
-            }
-
-            .container {
-                padding: 50px;
-                max-width: 2000px;
-                margin: 0 auto;
-            }
-
-            h1 {
-                text-align: center;
-                color: #ffffff;
-            }
-
-    
-            /* Estilos da agenda */
-            .agenda {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 1px;
-            }
-
-
-
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             
-            .menu {
-                width: 200px;
-                background-color: #fec364;
-                color: white;
-                padding: 5px;
-                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-                position: absolute;
-                top: 0;
-                left: -400px; /* Inicialmente fora da tela */
-                transition: left 0.3s ease;
-                z-index: 5000; /* Para garantir que o menu sobreponha outros elementos */
-            }
+        }
 
-            .menu ul {
-                list-style-type: none;
-                padding: 12;
-            }
+        .container {
+            padding: 50px;
+            max-width: 2000px;
+            margin: 0 auto;
+        }
 
-            .menu li {
-                margin: 15px 0;
-            }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+        }
 
-            .menu a {
-                color: #ffffff;
-                text-decoration: none;
-                padding: 10px;
-                display: block;
-                border-radius: 30px;
-                transition: background 0.3s;
-            }
 
-            .menu a:hover {
-                background-color: #f0ae45;
-            }
+        /* Estilos da agenda */
+        .agenda {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1px;
+        }
 
-            .container {
-                flex: 1;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #5eb4e8;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                display: flex;
-                flex-direction: column;
-                height: 100vh;
-                position: relative; /* Mantido para manter a estrutura */
-            }
 
-            h1 {
-                text-align: center;
-                position: relative;
-            }
 
-            .agenda {
-                display: flex;
-                justify-content: space-between;
-                flex-grow: 1;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                overflow: hidden;
-                position: relative; /* Para manter a estrutura */
-            }
+        
+        .menu {
+            width: 200px;
+            background-color: #fec364;
+            color: white;
+            padding: 5px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0;
+            left: -400px; /* Inicialmente fora da tela */
+            transition: left 0.3s ease;
+            z-index: 5000; /* Para garantir que o menu sobreponha outros elementos */
+        }
 
-            .dia {
-                flex: 1;
-                padding: 10px;
-                display: flex;
-                flex-direction: column;
-                background-color: #f9f9f9;
-                box-sizing: border-box;
-                position: relative;
-                align-items: center;
-                cursor: pointer;
-            }
+        .menu ul {
+            list-style-type: none;
+            padding: 12;
+        }
 
-            .dia:not(:last-child) {
-                border-right: 1px solid #ddd;
-            }
+        .menu li {
+            margin: 15px 0;
+        }
 
-            .dia h2 {
-                text-align: center;
-                font-size: 19px;
-                margin-bottom: 10px;
-                margin-top: 30px;
-            }
+        .menu a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 30px;
+            transition: background 0.3s;
+        }
 
-            ul {
-                list-style-type: none;
-                padding: 0;
-                flex-grow: 1;
-                text-align: center;
-            }
+        .menu a:hover {
+            background-color: #f0ae45;
+        }
 
-            .data {
-                position: absolute;
-                top: 10px;
-                left: 50%; /* Centraliza horizontalmente */
-                transform: translateX(-50%); /* Ajusta a centralização */
-                font-weight: bold;
-                background-color: #fec364;
-                color: white;
-                padding: 2px 5px;
-                border-radius: 3px;
-            }
+        .container {
+            flex: 1;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #5eb4e8;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative; /* Mantido para manter a estrutura */
+        }
 
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                justify-content: center;
-                align-items: center;
-            }
+        h1 {
+            text-align: center;
+            position: relative;
+        }
 
-            .modal-content {
-                background-color: white;
-                padding: 20px;
-                border-radius: 5px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-                text-align: center;
-                width: 300px;
-            }
+        .agenda {
+            display: flex;
+            justify-content: space-between;
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative; /* Para manter a estrutura */
+        }
 
-            .close {
-                cursor: pointer;
-                color: #007bff;
-                margin-top: 10px;
-            }
+        .dia {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            position: relative;
+            align-items: center;
+            cursor: pointer;
+        }
 
-            input[type="text"], input[type="time"], textarea, input[type="file"] {
-                width: 100%;
-                padding: 10px;
-                margin: 5px 0;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                box-sizing: border-box; /* Mantém o tamanho da caixa */
-            }
+        .dia:not(:last-child) {
+            border-right: 1px solid #ddd;
+        }
 
-            button {
-                background-color: #fec364;
-                color: white;
-                border: none;
-                padding: 10px 15px;
-                border-radius: 5px;
-                cursor: pointer;
-                margin-top: 10px;
-            }
+        .dia h2 {
+            text-align: center;
+            font-size: 19px;
+            margin-bottom: 10px;
+            margin-top: 30px;
+        }
 
-            button:hover {
-                background-color: #f0ae45;
-            }v
+        ul {
+            list-style-type: none;
+            padding: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
 
-            .checkbox-group {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 10px;
-            }
+        .data {
+            position: absolute;
+            top: 10px;
+            left: 50%; /* Centraliza horizontalmente */
+            transform: translateX(-50%); /* Ajusta a centralização */
+            font-weight: bold;
+            background-color: #fec364;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
 
-            .button-container {
-                position: absolute;
-                top: 20px;
-                left: 20px; /* Posição do botão de menu */
-                z-index: 1001; /* Para garantir que o botão esteja acima do menu */
-            }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
 
-            .download-button {
-                position: absolute;
-                top: 20px;
-                right: 20px; /* Posição do botão de baixar agenda */
-                z-index: 1001; /* Para garantir que o botão esteja acima do menu */
-            }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
 
-            .img-preview {
-                margin-top: 10px;
-                max-width: 100%;
-                max-height: 200px; /* Limita a altura da imagem */
-            }
+        .close {
+            cursor: pointer;
+            color: #007bff;
+            margin-top: 10px;
+        }
 
-            .remove-button {
-                background-color: transparent; /* Fundo transparente para o botão de remoção */
-                color: #dc3545; /* Cor do símbolo de remoção */
-                border: none; /* Sem borda */
-                cursor: pointer; /* Cursor de ponteiro */
-                font-size: 20px; /* Tamanho da fonte */
-                margin-left: 10px; /* Espaço à esquerda do símbolo */
-            }
+        input[type="text"], input[type="time"], textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Mantém o tamanho da caixa */
+        }
 
-            /* Estilo para as listras do botão do menu */
-            .menu-toggle {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px; /* Ajuste para estar abaixo do botão */
-                left: 20px; /* Abaixo do botão do menu */
-                z-index: 1001;
-            }
+        button {
+            background-color: #fec364;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
 
-        /* Adiciona uma borda inferior entre os itens da lista */
+        button:hover {
+            background-color: #f0ae45;
+        }v
+
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            position: absolute;
+            top: 20px;
+            left: 20px; /* Posição do botão de menu */
+            z-index: 1001; /* Para garantir que o botão esteja acima do menu */
+        }
+
+        .download-button {
+            position: absolute;
+            top: 20px;
+            right: 20px; /* Posição do botão de baixar agenda */
+            z-index: 1001; /* Para garantir que o botão esteja acima do menu */
+        }
+
+        .img-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 200px; /* Limita a altura da imagem */
+        }
+
+        .remove-button {
+            background-color: transparent; /* Fundo transparente para o botão de remoção */
+            color: #dc3545; /* Cor do símbolo de remoção */
+            border: none; /* Sem borda */
+            cursor: pointer; /* Cursor de ponteiro */
+            font-size: 20px; /* Tamanho da fonte */
+            margin-left: 10px; /* Espaço à esquerda do símbolo */
+        }
+
+        /* Estilo para as listras do botão do menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 60px; /* Ajuste para estar abaixo do botão */
+            left: 20px; /* Abaixo do botão do menu */
+            z-index: 1001;
+        }
+
+    /* Adiciona uma borda inferior entre os itens da lista */
 ul li {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #f0ae45; /* Linha de divisão */
+margin-bottom: 10px;
+padding-bottom: 10px;
+border-bottom: 1px solid #f0ae45; /* Linha de divisão */
 }
 
 ul li:last-child {
-    border-bottom: none; /* Remove a borda do último item */
+border-bottom: none; /* Remove a borda do último item */
 }
 
-            
+        
 
-            .menu-toggle.show {
-                display: flex; /* Exibe as listras apenas quando o menu está aberto */
-            }
-        </style>
-    </head>
-    <body>
-        <div class="button-container">
-            <button onclick="toggleMenu()">☰</button> <!-- Somente as três listras -->
-            <div class="menu-toggle" id="menuToggle">
-                <div></div>
-                <div></div>
-                <div></div>
+        .menu-toggle.show {
+            display: flex; /* Exibe as listras apenas quando o menu está aberto */
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button onclick="toggleMenu()">☰</button> <!-- Somente as três listras -->
+        <div class="menu-toggle" id="menuToggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div class="menu" id="menu">
+        <ul>
+            <li><a href="editUser.html">Perfil</a></li>
+            <li><a href="index.html" onclick="sair()">Sair</a></li>
+        </ul>
+    </div>    
+    <div class="container">
+        <h1>Agenda de Remédios</h1>
+        <button class="download-button" onclick="baixarAgenda()">Baixar Agenda</button>
+        <div class="agenda" id="agenda">
+            <div class="dia" onclick="abrirModal()">
+                <h2>Segunda-feira</h2>
+                <span class="data" id="data-segunda"></span>
+                <ul id="lista-segunda"></ul>
+            </div>
+            <div class="dia" onclick="abrirModal()">
+                <h2>Terça-feira</h2>
+                <span class="data" id="data-terca"></span>
+                <ul id="lista-terca"></ul>
+            </div>
+            <div class="dia" onclick="abrirModal()">
+                <h2>Quarta-feira</h2>
+                <span class="data" id="data-quarta"></span>
+                <ul id="lista-quarta"></ul>
+            </div>
+            <div class="dia" onclick="abrirModal()">
+                <h2>Quinta-feira</h2>
+                <span class="data" id="data-quinta"></span>
+                <ul id="lista-quinta"></ul>
+            </div>
+            <div class="dia" onclick="abrirModal()">
+                <h2>Sexta-feira</h2>
+                <span class="data" id="data-sexta"></span>
+                <ul id="lista-sexta"></ul>
+            </div>
+            <div class="dia" onclick="abrirModal()">
+                <h2>Sábado</h2>
+                <span class="data" id="data-sabado"></span>
+                <ul id="lista-sabado"></ul>
+            </div>
+            <div class="dia" onclick="abrirModal()">
+                <h2>Domingo</h2>
+                <span class="data" id="data-domingo"></span>
+                <ul id="lista-domingo"></ul>
             </div>
         </div>
-        <div class="menu" id="menu">
-            <ul>
-                <li><a href="editUser.html">Perfil</a></li>
-                <li><a href="index.html" onclick="sair()">Sair</a></li>
-            </ul>
-        </div>    
-        <div class="container">
-            <h1>Agenda de Remédios</h1>
-            <button class="download-button" onclick="baixarAgenda()">Baixar Agenda</button>
-            <div class="agenda" id="agenda">
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Segunda-feira</h2>
-                    <span class="data" id="data-segunda"></span>
-                    <ul id="lista-segunda"></ul>
-                </div>
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Terça-feira</h2>
-                    <span class="data" id="data-terca"></span>
-                    <ul id="lista-terca"></ul>
-                </div>
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Quarta-feira</h2>
-                    <span class="data" id="data-quarta"></span>
-                    <ul id="lista-quarta"></ul>
-                </div>
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Quinta-feira</h2>
-                    <span class="data" id="data-quinta"></span>
-                    <ul id="lista-quinta"></ul>
-                </div>
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Sexta-feira</h2>
-                    <span class="data" id="data-sexta"></span>
-                    <ul id="lista-sexta"></ul>
-                </div>
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Sábado</h2>
-                    <span class="data" id="data-sabado"></span>
-                    <ul id="lista-sabado"></ul>
-                </div>
-                <div class="dia" onclick="abrirModal()">
-                    <h2>Domingo</h2>
-                    <span class="data" id="data-domingo"></span>
-                    <ul id="lista-domingo"></ul>
-                </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2>Adicionar Remédio</h2>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="check-segunda"> S</label>
+                <label><input type="checkbox" id="check-terca"> T</label>
+                <label><input type="checkbox" id="check-quarta"> Q</label>
+                <label><input type="checkbox" id="check-quinta"> Q</label>
+                <label><input type="checkbox" id="check-sexta"> S</label>
+                <label><input type="checkbox" id="check-sabado"> S</label>
+                <label><input type="checkbox" id="check-domingo"> D</label>
             </div>
+            <form id="form-remedio" onsubmit="adicionarRemedio(event)">
+                <input type="text" id="remedio" placeholder="Nome do remédio" required>
+                <input type="time" id="horario" placeholder="Horário" required>
+                <textarea id="observacoes" rows="3" placeholder="Observações" style="text-align: center;"></textarea>
+                <input type="file" id="imagem" accept="image/*" onchange="mostrarImagem(event)"> <!-- Campo para upload de imagem -->
+                <img id="imagem-preview" class="img-preview" style="display:none;"> <!-- Preview da imagem -->
+                <button type="submit">Adicionar</button>
+                <div class="close" onclick="fecharModal()">Fechar</div>
+            </form>
         </div>
+    </div>
 
-        <div class="modal" id="modal">
-            <div class="modal-content">
-                <h2>Adicionar Remédio</h2>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="check-segunda"> S</label>
-                    <label><input type="checkbox" id="check-terca"> T</label>
-                    <label><input type="checkbox" id="check-quarta"> Q</label>
-                    <label><input type="checkbox" id="check-quinta"> Q</label>
-                    <label><input type="checkbox" id="check-sexta"> S</label>
-                    <label><input type="checkbox" id="check-sabado"> S</label>
-                    <label><input type="checkbox" id="check-domingo"> D</label>
-                </div>
-                <form id="form-remedio" onsubmit="adicionarRemedio(event)">
-                    <input type="text" id="remedio" placeholder="Nome do remédio" required>
-                    <input type="time" id="horario" placeholder="Horário" required>
-                    <textarea id="observacoes" rows="3" placeholder="Observações" style="text-align: center;"></textarea>
-                    <input type="file" id="imagem" accept="image/*" onchange="mostrarImagem(event)"> <!-- Campo para upload de imagem -->
-                    <img id="imagem-preview" class="img-preview" style="display:none;"> <!-- Preview da imagem -->
-                    <button type="submit">Adicionar</button>
-                    <div class="close" onclick="fecharModal()">Fechar</div>
-                </form>
-            </div>
-        </div>
+    <script>
+        const menu = document.getElementById('menu');
+        const menuToggle = document.getElementById('menuToggle');
 
-        <script>
-            const menu = document.getElementById('menu');
-            const menuToggle = document.getElementById('menuToggle');
-
-            function toggleMenu() {
-                if (menu.style.left === '0px') {
-                    menu.style.left = '-220px'; // Oculta o menu
-                    menuToggle.classList.remove('show'); // Oculta as listras
-                } else {
-                    menu.style.left = '0px'; // Exibe o menu
-                    menuToggle.classList.add('show'); // Exibe as listras
-                }
+        function toggleMenu() {
+            if (menu.style.left === '0px') {
+                menu.style.left = '-220px'; // Oculta o menu
+                menuToggle.classList.remove('show'); // Oculta as listras
+            } else {
+                menu.style.left = '0px'; // Exibe o menu
+                menuToggle.classList.add('show'); // Exibe as listras
             }
-            function sair() {
-                // Exibe o pop-up de desconectando
-                var popup = document.getElementById('popupDesconectando');
-                popup.style.display = 'block';
-            }
-            
-            document.addEventListener('click', (event) => {
-                const isClickInsideMenu = menu.contains(event.target);
-                const isClickInsideButton = document.querySelector('.button-container').contains(event.target);
-                const isMenuOpen = menu.style.left === '0px';
+        }
+        function sair() {
+            // Exibe o pop-up de desconectando
+            var popup = document.getElementById('popupDesconectando');
+            popup.style.display = 'block';
+        }
+        
+        document.addEventListener('click', (event) => {
+            const isClickInsideMenu = menu.contains(event.target);
+            const isClickInsideButton = document.querySelector('.button-container').contains(event.target);
+            const isMenuOpen = menu.style.left === '0px';
 
-                if (!isClickInsideMenu && !isClickInsideButton && isMenuOpen) {
-                    menu.style.left = '-220px'; // Fecha o menu se o clique foi fora do menu e do botão
-                    menuToggle.classList.remove('show'); // Oculta as listras
-                }
+            if (!isClickInsideMenu && !isClickInsideButton && isMenuOpen) {
+                menu.style.left = '-220px'; // Fecha o menu se o clique foi fora do menu e do botão
+                menuToggle.classList.remove('show'); // Oculta as listras
+            }
+        });
+
+        const hoje = new Date();
+
+        function gerarDatasDaSemana() {
+            const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+            const dataDaSemana = [];
+
+            for (let i = 0; i < 7; i++) {
+                const data = new Date(hoje);
+                data.setDate(hoje.getDate() + (i - hoje.getDay() + 1) % 7);
+                dataDaSemana.push(data.toLocaleDateString('pt-BR'));
+            }
+
+            dias.forEach((dia, index) => {
+                document.getElementById(`data-${dia}`).innerText = dataDaSemana[index];
             });
+        }
 
-            const hoje = new Date();
+        function abrirModal() {
+            document.getElementById('modal').style.display = 'flex';
+        }
 
-            function gerarDatasDaSemana() {
-                const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
-                const dataDaSemana = [];
+        function fecharModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('form-remedio').reset(); // Limpa o formulário ao fechar o modal
+            document.getElementById('imagem-preview').style.display = 'none'; // Oculta a imagem
+        }
 
-                for (let i = 0; i < 7; i++) {
-                    const data = new Date(hoje);
-                    data.setDate(hoje.getDate() + (i - hoje.getDay() + 1) % 7);
-                    dataDaSemana.push(data.toLocaleDateString('pt-BR'));
+        function mostrarImagem(event) {
+            const imagemPreview = document.getElementById('imagem-preview');
+            const arquivo = event.target.files[0];
+
+            if (arquivo) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagemPreview.src = e.target.result;
+                    imagemPreview.style.display = 'block'; // Exibe a imagem
                 }
-
-                dias.forEach((dia, index) => {
-                    document.getElementById(`data-${dia}`).innerText = dataDaSemana[index];
-                });
+                reader.readAsDataURL(arquivo);
             }
-
-            function abrirModal() {
-                document.getElementById('modal').style.display = 'flex';
-            }
-
-            function fecharModal() {
-                document.getElementById('modal').style.display = 'none';
-                document.getElementById('form-remedio').reset(); // Limpa o formulário ao fechar o modal
-                document.getElementById('imagem-preview').style.display = 'none'; // Oculta a imagem
-            }
-
-            function mostrarImagem(event) {
-                const imagemPreview = document.getElementById('imagem-preview');
-                const arquivo = event.target.files[0];
-
-                if (arquivo) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagemPreview.src = e.target.result;
-                        imagemPreview.style.display = 'block'; // Exibe a imagem
-                    }
-                    reader.readAsDataURL(arquivo);
-                }
-            }
+        }
 
 function adicionarRemedio(event) {
-    event.preventDefault();
-    const remedio = document.getElementById('remedio').value;
-    const horario = document.getElementById('horario').value;
-    const observacoes = document.getElementById('observacoes').value;
-    const imagemPreview = document.getElementById('imagem-preview').src; // Obtém a imagem
-    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
-    const diasSelecionados = [];
+event.preventDefault();
+const remedio = document.getElementById('remedio').value;
+const horario = document.getElementById('horario').value;
+const observacoes = document.getElementById('observacoes').value;
+const imagemPreview = document.getElementById('imagem-preview').src; // Obtém a imagem
+const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+const diasSelecionados = [];
 
-    checkboxes.forEach((checkbox, index) => {
-        if (checkbox.checked) {
-            diasSelecionados.push(index);
-            checkbox.checked = false; // Desmarcar o checkbox
-        }
-    });
+checkboxes.forEach((checkbox, index) => {
+    if (checkbox.checked) {
+        diasSelecionados.push(index);
+        checkbox.checked = false; // Desmarcar o checkbox
+    }
+});
 
-    diasSelecionados.forEach(dia => {
-        const diaNome = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'][dia];
-        const lista = document.getElementById(`lista-${diaNome}`);
-        const li = document.createElement('li');
-        
-        // Criar os ícones e textos
-        const horarioIcon = document.createElement('span');
-        horarioIcon.innerHTML = `<i class="fas fa-clock"></i> ${horario} - `;
-        
-        const remedioIcon = document.createElement('span');
-        remedioIcon.innerHTML = `<i class="fas fa-pills"></i> ${remedio} `;
-        
-        
-        
-        // Adicionar os ícones e textos no <li>
-        li.appendChild(horarioIcon);
-        li.appendChild(remedioIcon);
-     
+diasSelecionados.forEach(dia => {
+    const diaNome = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'][dia];
+    const lista = document.getElementById(`lista-${diaNome}`);
+    const li = document.createElement('li');
+    
+    // Criar os ícones e textos
+    const horarioIcon = document.createElement('span');
+    horarioIcon.innerHTML = `<i class="fas fa-clock"></i> ${horario} - `;
+    
+    const remedioIcon = document.createElement('span');
+    remedioIcon.innerHTML = `<i class="fas fa-pills"></i> ${remedio} `;
+    
+    
+    
+    // Adicionar os ícones e textos no <li>
+    li.appendChild(horarioIcon);
+    li.appendChild(remedioIcon);
+ 
 
-        const observacaoIcon = document.createElement('div'); // Usando div para a observação
-        observacaoIcon.innerHTML = `<i class="fas fa-sticky-note"></i> ${observacoes}`;
-        li.appendChild(observacaoIcon);
-        
+    const observacaoIcon = document.createElement('div'); // Usando div para a observação
+    observacaoIcon.innerHTML = `<i class="fas fa-sticky-note"></i> ${observacoes}`;
+    li.appendChild(observacaoIcon);
+    
 
-        li.dataset.horario = horario; // Armazena o horário como um atributo para ordenação
+    li.dataset.horario = horario; // Armazena o horário como um atributo para ordenação
 
-        // Adicionar a imagem (se houver)
-        if (imagemPreview) {
-            const img = document.createElement('img');
-            img.src = imagemPreview;
-            img.className = 'img-preview';
-            img.style.maxWidth = '50px';
-            img.style.marginLeft = '10px';
-            li.appendChild(img);
-        }
+    // Adicionar a imagem (se houver)
+    if (imagemPreview) {
+        const img = document.createElement('img');
+        img.src = imagemPreview;
+        img.className = 'img-preview';
+        img.style.maxWidth = '50px';
+        img.style.marginLeft = '10px';
+        li.appendChild(img);
+    }
 
 
-        // Adicionar o botão de remoção
-        const removeButton = document.createElement('button');
-        removeButton.textContent = '−';
-        removeButton.className = 'remove-button';
-        removeButton.onclick = function(event) {
-            event.stopPropagation();
-            lista.removeChild(li);
-        };
-        li.appendChild(removeButton);
+    // Adicionar o botão de remoção
+    const removeButton = document.createElement('button');
+    removeButton.textContent = '−';
+    removeButton.className = 'remove-button';
+    removeButton.onclick = function(event) {
+        event.stopPropagation();
+        lista.removeChild(li);
+    };
+    li.appendChild(removeButton);
 
-        lista.appendChild(li);
+    lista.appendChild(li);
 
-        // Ordenar os itens de acordo com o horário após adicionar
-        const itens = Array.from(lista.children);
-        itens.sort((a, b) => a.dataset.horario.localeCompare(b.dataset.horario));
+    // Ordenar os itens de acordo com o horário após adicionar
+    const itens = Array.from(lista.children);
+    itens.sort((a, b) => a.dataset.horario.localeCompare(b.dataset.horario));
 
-        // Limpar e reordenar a lista
-        lista.innerHTML = '';
-        itens.forEach(item => lista.appendChild(item));
-    });
+    // Limpar e reordenar a lista
+    lista.innerHTML = '';
+    itens.forEach(item => lista.appendChild(item));
+});
 
-    fecharModal();
-    document.getElementById('form-remedio').reset();
+fecharModal();
+document.getElementById('form-remedio').reset();
 }
 
 
-            function baixarAgenda() {
-                const { jsPDF } = window.jspdf; // Acesso ao jsPDF
-                const pdf = new jsPDF();
-                const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
-                const colunas = [10, 60, 100]; // Posições das colunas no PDF
-                let y = 10; // Posição vertical inicial
+        function baixarAgenda() {
+            const { jsPDF } = window.jspdf; // Acesso ao jsPDF
+            const pdf = new jsPDF();
+            const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+            const colunas = [10, 60, 100]; // Posições das colunas no PDF
+            let y = 10; // Posição vertical inicial
 
-                pdf.setFontSize(18);
-                pdf.text('Agenda de Remédios', 10, y);
-                y += 20; // Espaço após o título
+            pdf.setFontSize(18);
+            pdf.text('Agenda de Remédios', 10, y);
+            y += 20; // Espaço após o título
 
-                dias.forEach((dia, index) => {
-                    const lista = document.getElementById(`lista-${dia}`);
-                    const items = lista.getElementsByTagName('li');
+            dias.forEach((dia, index) => {
+                const lista = document.getElementById(`lista-${dia}`);
+                const items = lista.getElementsByTagName('li');
 
-                    // Título do dia
-                    pdf.setFontSize(14);
-                    pdf.text(dia.charAt(0).toUpperCase() + dia.slice(1) + ':', 10, y);
-                    y += 10;
+                // Título do dia
+                pdf.setFontSize(14);
+                pdf.text(dia.charAt(0).toUpperCase() + dia.slice(1) + ':', 10, y);
+                y += 10;
 
-                    pdf.setFontSize(12);
-                    for (let item of items) {
+                pdf.setFontSize(12);
+                for (let item of items) {
                         const text = item.innerText.replace('−', '').trim(); // Remove o símbolo de negativo
                         const [medicamento, ...resto] = text.split(' - ');
                         const observacoes = resto.join(' - '); // Reunião das observações
@@ -518,19 +518,29 @@ function adicionarRemedio(event) {
                         // Adiciona as informações no formato desejado
                         pdf.text(medicamento, colunas[0], y);
                         pdf.text(observacoes, colunas[1], y);
-                        y += 10; // Ajusta a posição vertical
 
-                        // Adiciona uma linha para separar os itens
+                        // Obtém a imagem
+                        const imgElement = item.querySelector('.img-preview');
+                        if (imgElement) {
+                            const imgData = imgElement.src;
+                            const imgX = colunas[2];
+                            const imgY = y - 15; // Mude o numero para deslocar para cima ou para baixo
+
+                            pdf.addImage(imgData, 'PNG', imgX, imgY, 20, 20); // os numeros são o tamanho da imagem
+                        }
+
+                        y += 10; 
+
                         pdf.line(colunas[0], y, 200, y); 
-                        y += 2; // Espaço entre os  itens
+                        y += 2; 
                     }
-                    y += 10; // Espaço entre os dias
-                });
+                y += 10; // Espaço entre os dias
+            });
 
-                pdf.save('agenda.pdf'); // Salva o PDF
-            }
+            pdf.save('agenda.pdf'); // Salva o PDF
+        }
 
-            gerarDatasDaSemana();
-        </script>
-    </body>
-    </html>
+        gerarDatasDaSemana();
+    </script>
+</body>
+</html>
