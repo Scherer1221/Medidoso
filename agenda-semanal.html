@@ -512,12 +512,12 @@ function adicionarRemedio(event) {
 					
                     y += 7;
 
-                    pdf.setFontSize(12);
+                    pdf.setFontSize(14);
 					pdf.setTextColor(0,0,0);
 					
                     for (let item of items) {
 					
-					 if (y > pdf.internal.pageSize.height - 10) {
+					 if (y > pdf.internal.pageSize.height - 15) {
                        pdf.addPage();
                        y = 10;
                      }
@@ -535,15 +535,15 @@ function adicionarRemedio(event) {
                         pdf.text(observacoes, colunas[1], y);
 						
 						
-						pdf.addImage(imagem, colunas[2], y, 10, 10);
+						pdf.addImage(imagem, colunas[2], y - 8, 20, 20);
 						
-                        y += 10; // Ajusta a posição vertical
+                        y += 14; // Ajusta a posição vertical
 
                         // Adiciona uma linha para separar os itens
                         pdf.line(colunas[0], y, 200, y); 
-                        y += 4; // Espaço entre os  itens
+                        y += 10; // Espaço entre os  itens
                     }
-                    y += 2; // Espaço entre os dias
+                    y += 4; // Espaço entre os dias
 					
 					
                 });
