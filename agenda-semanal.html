@@ -7,7 +7,121 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <script type="module"> // Adicionado para adicionar dados no banco*************************
+            import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+            import { adicionarRemedioFirestore, carregarRemediosFirestore, removerRemedioFirestore} from './firestore.js';
 
+            const auth = getAuth();
+
+            let userId = null;
+
+            onAuthStateChanged(auth, user => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("Usuário autenticado:", userId);
+
+                    carregarRemediosFirestore(userId);
+
+                    gerarDatasDaSemana();
+                } else {
+                    window.location.href = "index.html";
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('form-remedio').addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const remedio = document.getElementById('remedio').value;
+                    const horario = document.getElementById('horario').value;
+                    const observacoes = document.getElementById('observacoes').value;
+                    const imagemPreview = document.getElementById('imagem-preview').src;
+                    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+                    const diasSelecionados = [];
+
+                    if (!userId) {
+                        console.error("Usuário não autenticado!");
+                        return;
+                    }
+
+                    checkboxes.forEach((checkbox, index) => {
+                        if (checkbox.checked) {
+                            diasSelecionados.push(index);
+                            checkbox.checked = false;
+                        }
+                    });
+
+                    for (const dia of diasSelecionados) {
+                        const diaNome = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'][dia];
+                        const remedioData = {
+                            nome: remedio,
+                            horario: horario,
+                            observacoes: observacoes,
+                            imagem: imagemPreview
+                        };
+
+                        try {
+                            await adicionarRemedioFirestore(userId, diaNome, remedioData);
+
+                            const lista = document.getElementById(`lista-${diaNome}`);
+                            const li = document.createElement('li');
+
+                            const horarioIcon = document.createElement('span');
+                            horarioIcon.innerHTML = `<i class="fas fa-clock"></i> ${horario} - `;
+
+                            const remedioIcon = document.createElement('span');
+                            remedioIcon.innerHTML = `<i class="fas fa-pills"></i> ${remedio} `;
+
+                            li.appendChild(horarioIcon);
+                            li.appendChild(remedioIcon);
+
+                            const observacaoIcon = document.createElement('div');
+                            observacaoIcon.innerHTML = `<i class="fas fa-sticky-note"></i> ${observacoes}`;
+                            li.appendChild(observacaoIcon);
+
+                            li.dataset.horario = horario;
+
+                            if (imagemPreview) {
+                                const img = document.createElement('img');
+                                img.src = imagemPreview;
+                                img.className = 'img-preview';
+                                img.style.maxWidth = '50px';
+                                img.style.marginLeft = '10px';
+                                li.appendChild(img);
+                            }
+
+                            const removeButton = document.createElement('button');
+                            removeButton.textContent = '−';
+                            removeButton.className = 'remove-button';
+                            removeButton.onclick = async function(event) {
+                                event.stopPropagation();
+                                lista.removeChild(li);
+                                await removerRemedioFirestore(userId, diaNome, horario, remedio);
+                            };
+                            li.appendChild(removeButton);
+
+                            lista.appendChild(li);
+
+                            const itens = Array.from(lista.children);
+                            itens.sort((a, b) => a.dataset.horario.localeCompare(b.dataset.horario));
+
+                            lista.innerHTML = '';
+                            itens.forEach(item => lista.appendChild(item));
+
+                            console.log(`Remédio "${remedio}" adicionado visualmente para o dia ${diaNome}`);
+                        } catch (error) {
+                            console.error("Erro ao adicionar remédio no Firestore:", error);
+                        }
+                    }
+
+
+                    document.getElementById('form-remedio').reset();
+                    fecharModal();
+                });
+            });
+
+    
+        </script>
+    
         <style>
             html, body {
                 height: 100%;
@@ -327,7 +441,7 @@ ul li:last-child {
                     <label><input type="checkbox" id="check-sabado"> S</label>
                     <label><input type="checkbox" id="check-domingo"> D</label>
                 </div>
-                <form id="form-remedio" onsubmit="adicionarRemedio(event)">
+                <form id="form-remedio">
                     <input type="text" id="remedio" placeholder="Nome do remédio" required>
                     <input type="time" id="horario" placeholder="Horário" required>
                     <textarea id="observacoes" rows="3" placeholder="Observações" style="text-align: center;"></textarea>
@@ -392,8 +506,8 @@ ul li:last-child {
 
             function fecharModal() {
                 document.getElementById('modal').style.display = 'none';
-                document.getElementById('form-remedio').reset(); // Limpa o formulário ao fechar o modal
-                document.getElementById('imagem-preview').style.display = 'none'; // Oculta a imagem
+                document.getElementById('form-remedio').reset();
+                document.getElementById('imagem-preview').style.display = 'none';
             }
 
             function mostrarImagem(event) {
@@ -410,133 +524,117 @@ ul li:last-child {
                 }
             }
 
-function adicionarRemedio(event) {
-    event.preventDefault();
-    const remedio = document.getElementById('remedio').value;
-    const horario = document.getElementById('horario').value;
-    const observacoes = document.getElementById('observacoes').value;
-    const imagemPreview = document.getElementById('imagem-preview').src; // Obtém a imagem
-    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
-    const diasSelecionados = [];
+            function adicionarRemedio(event) {
+                event.preventDefault();
+                const remedio = document.getElementById('remedio').value;
+                const horario = document.getElementById('horario').value;
+                const observacoes = document.getElementById('observacoes').value;
+                const imagemPreview = document.getElementById('imagem-preview').src;
+                const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+                const diasSelecionados = [];
 
-    checkboxes.forEach((checkbox, index) => {
-        if (checkbox.checked) {
-            diasSelecionados.push(index);
-            checkbox.checked = false; // Desmarcar o checkbox
-        }
-    });
+                checkboxes.forEach((checkbox, index) => {
+                    if (checkbox.checked) {
+                        diasSelecionados.push(index);
+                        checkbox.checked = false;
+                    }
+                });
 
-    diasSelecionados.forEach(dia => {
-        const diaNome = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'][dia];
-        const lista = document.getElementById(`lista-${diaNome}`);
-        const li = document.createElement('li');
-        
-        // Criar os ícones e textos
-        const horarioIcon = document.createElement('span');
-        horarioIcon.innerHTML = `<i class="fas fa-clock"></i> ${horario} - `;
-        
-        const remedioIcon = document.createElement('span');
-        remedioIcon.innerHTML = `<i class="fas fa-pills"></i> ${remedio} `;
-        
-        
-        
-        // Adicionar os ícones e textos no <li>
-        li.appendChild(horarioIcon);
-        li.appendChild(remedioIcon);
-     
+                diasSelecionados.forEach(dia => {
+                    const diaNome = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'][dia];
+                    const lista = document.getElementById(`lista-${diaNome}`);
+                    const li = document.createElement('li');
+                    
+                    const horarioIcon = document.createElement('span');
+                    horarioIcon.innerHTML = `<i class="fas fa-clock"></i> ${horario} - `;
+                    
+                    const remedioIcon = document.createElement('span');
+                    remedioIcon.innerHTML = `<i class="fas fa-pills"></i> ${remedio} `;
+                    
+                    
+                    
+                    li.appendChild(horarioIcon);
+                    li.appendChild(remedioIcon);
+                
 
-        const observacaoIcon = document.createElement('div'); // Usando div para a observação
-        observacaoIcon.innerHTML = `<i class="fas fa-sticky-note"></i> ${observacoes}`;
-        li.appendChild(observacaoIcon);
-        
+                    const observacaoIcon = document.createElement('div');
+                    observacaoIcon.innerHTML = `<i class="fas fa-sticky-note"></i> ${observacoes}`;
+                    li.appendChild(observacaoIcon);
+                    
 
-        li.dataset.horario = horario; // Armazena o horário como um atributo para ordenação
+                    li.dataset.horario = horario;
 
-        // Adicionar a imagem (se houver)
-        if (imagemPreview) {
-            const img = document.createElement('img');
-            img.src = imagemPreview;
-            img.className = 'img-preview';
-            img.style.maxWidth = '50px';
-            img.style.marginLeft = '10px';
-            li.appendChild(img);
-        }
+                    if (imagemPreview) {
+                        const img = document.createElement('img');
+                        img.src = imagemPreview;
+                        img.className = 'img-preview';
+                        img.style.maxWidth = '50px';
+                        img.style.marginLeft = '10px';
+                        li.appendChild(img);
+                    }
 
+                    lista.appendChild(li);
 
-        // Adicionar o botão de remoção
-        const removeButton = document.createElement('button');
-        removeButton.textContent = '−';
-        removeButton.className = 'remove-button';
-        removeButton.onclick = function(event) {
-            event.stopPropagation();
-            lista.removeChild(li);
-        };
-        li.appendChild(removeButton);
+                    const itens = Array.from(lista.children);
+                    itens.sort((a, b) => a.dataset.horario.localeCompare(b.dataset.horario));
 
-        lista.appendChild(li);
+                    lista.innerHTML = '';
+                    itens.forEach(item => lista.appendChild(item));
+                });
 
-        // Ordenar os itens de acordo com o horário após adicionar
-        const itens = Array.from(lista.children);
-        itens.sort((a, b) => a.dataset.horario.localeCompare(b.dataset.horario));
-
-        // Limpar e reordenar a lista
-        lista.innerHTML = '';
-        itens.forEach(item => lista.appendChild(item));
-    });
-
-    fecharModal();
-    document.getElementById('form-remedio').reset();
-}
+                fecharModal();
+                document.getElementById('form-remedio').reset();
+            }
 
             function baixarAgenda() {
-				
-                const { jsPDF } = window.jspdf; // Acesso ao jsPDF
+                
+                const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF();
-				
+                
                 const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
-                const colunas = [10, 60, 150]; // Posições das colunas no PDF
-                let y = 10; // Posição vertical inicial
+                const colunas = [10, 60, 150];
+                let y = 10;
 
                 pdf.setFontSize(16);
                 pdf.text('Agenda de Remédios', 10, y);
                 y += 10; // Espaço após o título
-				
+                
                 dias.forEach((dia, index) => {
                     const lista = document.getElementById(`lista-${dia}`);
                     const items = lista.getElementsByTagName('li');
-															
+                                                            
                     // Título do dia
                     pdf.setFontSize(14);
-					pdf.setTextColor(255,0,0);
+                    pdf.setTextColor(255,0,0);
                     pdf.text(dia.charAt(0).toUpperCase() + dia.slice(1) + ':', 10, y);
-					
+                    
                     y += 7;
 
                     pdf.setFontSize(14);
-					pdf.setTextColor(0,0,0);
-					
+                    pdf.setTextColor(0,0,0);
+                    
                     for (let item of items) {
-					
-					 if (y > pdf.internal.pageSize.height - 15) {
-                       pdf.addPage();
-                       y = 10;
-                     }
-												
+                    
+                        if (y > pdf.internal.pageSize.height - 15) {
+                        pdf.addPage();
+                        y = 10;
+                        }
+                                                
                         const text = item.innerText.replace('−', '').trim(); // Remove o símbolo de negativo
                         const [medicamento, ...resto] = text.split(' - ');
                         const observacoes = resto.join(' - '); // Reunião das observações
-						const imagem = item.getElementsByClassName('img-preview')[0].getAttribute('src');
-						//console.log(imagem);
-						
-						//var imagemBase64 = imagem.target.result;
-						
+                        const imagem = item.getElementsByClassName('img-preview')[0].getAttribute('src');
+                        //console.log(imagem);
+                        
+                        //var imagemBase64 = imagem.target.result;
+                        
                         // Adiciona as informações no formato desejado
                         pdf.text(medicamento, colunas[0], y);
                         pdf.text(observacoes, colunas[1], y);
-						
-						
-						pdf.addImage(imagem, colunas[2], y - 8, 20, 20);
-						
+                        
+                        
+                        pdf.addImage(imagem, colunas[2], y - 8, 20, 20);
+                        
                         y += 14; // Ajusta a posição vertical
 
                         // Adiciona uma linha para separar os itens
@@ -544,15 +642,13 @@ function adicionarRemedio(event) {
                         y += 10; // Espaço entre os  itens
                     }
                     y += 4; // Espaço entre os dias
-					
-					
+                    
+                    
                 });
-				
+                
                 pdf.save('agenda.pdf'); // Salva o PDF
-				
-            } 
-
-            gerarDatasDaSemana();
+                
+            }
         </script>
     </body>
     </html>
