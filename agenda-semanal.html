@@ -277,7 +277,7 @@
                 border-radius: 5px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
                 text-align: center;
-                width: 300px;
+                width: 375px;
             }
 
             .close {
@@ -433,13 +433,13 @@ ul li:last-child {
             <div class="modal-content">
                 <h2>Adicionar Remédio</h2>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="check-segunda"> S</label>
-                    <label><input type="checkbox" id="check-terca"> T</label>
-                    <label><input type="checkbox" id="check-quarta"> Q</label>
-                    <label><input type="checkbox" id="check-quinta"> Q</label>
-                    <label><input type="checkbox" id="check-sexta"> S</label>
-                    <label><input type="checkbox" id="check-sabado"> S</label>
-                    <label><input type="checkbox" id="check-domingo"> D</label>
+                    <label><input type="checkbox" id="check-segunda">Seg</label>
+                    <label><input type="checkbox" id="check-terca">Ter</label>
+                    <label><input type="checkbox" id="check-quarta">Qua</label>
+                    <label><input type="checkbox" id="check-quinta">Qui</label>
+                    <label><input type="checkbox" id="check-sexta">Sex</label>
+                    <label><input type="checkbox" id="check-sabado">Sáb</label>
+                    <label><input type="checkbox" id="check-domingo">Dom</label>
                 </div>
                 <form id="form-remedio">
                     <input type="text" id="remedio" placeholder="Nome do remédio" required>
@@ -524,7 +524,7 @@ ul li:last-child {
                 }
             }
 
-            function adicionarRemedio(event) {
+            /* function adicionarRemedio(event) {
                 event.preventDefault();
                 const remedio = document.getElementById('remedio').value;
                 const horario = document.getElementById('horario').value;
@@ -584,7 +584,7 @@ ul li:last-child {
 
                 fecharModal();
                 document.getElementById('form-remedio').reset();
-            }
+            } */
 
             function baixarAgenda() {
                 
